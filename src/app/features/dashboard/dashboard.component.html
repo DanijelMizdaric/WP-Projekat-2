@@ -1,0 +1,99 @@
+<!-- Navbar -->
+<mat-toolbar color="primary" class="dashboard-toolbar">
+  <div class="toolbar-left">
+    <button mat-icon-button (click)="toggleSidenav()">
+      <mat-icon>menu</mat-icon>
+    </button>
+    <span class="logo">📊 IPI Dashboard</span>
+  </div>
+  
+  <div class="toolbar-right">
+    <!-- Theme Selector -->
+    <button mat-button [matMenuTriggerFor]="themeMenu">
+      <mat-icon>palette</mat-icon>
+      {{ currentTheme().name }}
+    </button>
+    <mat-menu #themeMenu="matMenu">
+      <button mat-menu-item *ngFor="let theme of availableThemes" 
+              (click)="changeTheme(theme.id)">
+        <span class="theme-color" [style.background]="theme.primaryColor"></span>
+        {{ theme.name }}
+      </button>
+    </mat-menu>
+    
+    <!-- User Menu -->
+    <button mat-button [matMenuTriggerFor]="userMenu">
+      <mat-icon>person</mat-icon>
+      {{ user?.email }}
+    </button>
+    <mat-menu #userMenu="matMenu">
+      <button mat-menu-item>
+        <mat-icon>settings</mat-icon>
+        Podešavanja
+      </button>
+      <button mat-menu-item (click)="logout()">
+        <mat-icon>logout</mat-icon>
+        Odjavi se
+      </button>
+    </mat-menu>
+  </div>
+</mat-toolbar>
+
+<!-- Main Content -->
+<main class="dashboard-content">
+  <div class="welcome-section">
+    <h1>👋 Dobrodošao, {{ user?.email }}!</h1>
+    <p>Ovo je tvoj Personal Life Dashboard. Dodaj widget-e za praćenje navika, spavanja, učenja i više.</p>
+  </div>
+  
+  <!-- Widget Grid -->
+  <mat-grid-list cols="4" rowHeight="200px" gutterSize="16px">
+    <!-- Habit Tracker -->
+    <mat-grid-tile colspan="2" rowspan="1">
+      <mat-card class="widget-card">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon>check_circle</mat-icon>
+            Habit Tracker
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <p>Prati svoje dnevne navike</p>
+          <button mat-button color="primary">Otvori</button>
+        </mat-card-content>
+      </mat-card>
+    </mat-grid-tile>
+    
+    <!-- Sleep Tracker -->
+    <mat-grid-tile colspan="1" rowspan="1">
+      <mat-card class="widget-card">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon>bedtime</mat-icon>
+            Sleep Tracker
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <p>Prati sati spavanja</p>
+        </mat-card-content>
+      </mat-card>
+    </mat-grid-tile>
+    
+    <!-- Study Planner -->
+    <mat-grid-tile colspan="1" rowspan="1">
+      <mat-card class="widget-card">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon>school</mat-icon>
+            Study Planner
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <p>Planiraj učenje</p>
+        </mat-card-content>
+      </mat-card>
+    </mat-grid-tile>
+    
+    <!-- More widgets... -->
+  </mat-grid-list>
+</main>
