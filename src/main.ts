@@ -3,13 +3,13 @@ import { provideRouter } from '@angular/router';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideToastr } from 'ngx-toastr';
 import { AppComponent } from './app/app.component';
-import { routes } from './app/app.routes';
+import { routes } from './app/app-routing.module';
 
 bootstrapApplication(AppComponent, {
   providers: [
     provideRouter(routes),
-    provideAnimations(),  // OBAVEZNO za Toastr
-    provideToastr({       // Konfiguriše Toastr
+    provideAnimations(),  
+    provideToastr({       
       timeOut: 3000,
       positionClass: 'toast-bottom-right',
       preventDuplicates: true,

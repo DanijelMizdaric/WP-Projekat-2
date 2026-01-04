@@ -6,7 +6,7 @@ export const authGuard: CanActivateFn = () => {
   const firebaseService = inject(FirebaseService);
   const router = inject(Router);
   
-  if (firebaseService.isAuthenticated()) {
+  if (firebaseService.isAuthenticatedValue()) {
     return true;
   }
   

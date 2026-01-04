@@ -50,24 +50,13 @@
   <mat-grid-list cols="4" rowHeight="600px" gutterSize="16px">
     <!-- Habit Tracker -->
     <mat-grid-tile colspan="2" rowspan="1">
-      <!-- STARI STATIČKI CARD JE ZAMENJEN SA KOMPONENTOM -->
+    
       <app-habit-tracker></app-habit-tracker>
     </mat-grid-tile>
     
     <!-- Sleep Tracker -->
     <mat-grid-tile colspan="1" rowspan="1">
-      <mat-card class="widget-card">
-        <mat-card-header>
-          <mat-card-title>
-            <mat-icon>bedtime</mat-icon>
-            Sleep Tracker
-          </mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-          <p>Unesi sate spavanja svaki dan i prati svoje obrasce spavanja.</p>
-          <button mat-button>Dodaj podatak</button>
-        </mat-card-content>
-      </mat-card>
+      <app-sleep-tracker></app-sleep-tracker>
     </mat-grid-tile>
     
     <!-- Study Planner -->

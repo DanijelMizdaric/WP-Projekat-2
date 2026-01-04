@@ -2,6 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { HabitTrackerComponent } from './widgets/habit-tracker/habit-tracker.component';
+import { SleepTrackerComponent } from './widgets/sleep-tracker/sleep-tracker.component';
 
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
@@ -25,6 +26,7 @@ import { ThemeService } from 'src/app/core/services/theme.service';
     MatCardModule,
     MatGridListModule,
 	HabitTrackerComponent,
+	SleepTrackerComponent,
   ],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss']

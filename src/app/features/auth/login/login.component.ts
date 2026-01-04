@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 
-// Angular Material
+
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -11,7 +11,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatIconModule } from '@angular/material/icon';
 
-// Servisi
+
 import { FirebaseService } from 'src/app/core/services/firebase.service';
 
 @Component({
@@ -48,27 +48,27 @@ export class LoginComponent {
   }
   
   async onSubmit() {
-    if (this.loginForm.invalid) return;
-    
-    this.isLoading.set(true);
-    this.errorMessage.set('');
-    
-    const { email, password } = this.loginForm.value;
-    
-    const result = await this.firebaseService.login(email, password);
-    
-    this.isLoading.set(false);
-    
-    if (result.success) {
-      // Preusmeri na dashboard
-      this.router.navigate(['/dashboard']);
-    } else {
-      this.errorMessage.set(result.error || 'Došlo je do nepoznate greške');
-      this.loginForm.get('password')?.reset();
-    }
-  }
+  if (this.loginForm.invalid) return;
   
-  // Pomoćne metode za template
+  this.isLoading.set(true);
+  this.errorMessage.set('');
+  
+  const { email, password } = this.loginForm.value;
+  
+  const result = await this.firebaseService.login(email, password); 
+  
+  this.isLoading.set(false);
+  
+  if (result.success) {
+	console.log('Login uspješan, pokušavam navigaciju na /home');
+    this.router.navigate(['/home']); 
+  } else {
+    this.errorMessage.set(result.error || 'Došlo je do nepoznate greške');
+    this.loginForm.get('password')?.reset();
+  }
+}
+  
+  
   get email() { return this.loginForm.get('email'); }
   get password() { return this.loginForm.get('password'); }
 }

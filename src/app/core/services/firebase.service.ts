@@ -14,6 +14,13 @@ import {
   doc, 
   setDoc, 
   getDoc,
+  collection, 
+  query,     
+  where,      
+  getDocs,   
+  addDoc,   
+  updateDoc, 
+  Timestamp, 
   Firestore 
 } from 'firebase/firestore';
 import { environment } from '../../../environments/environment';
@@ -26,37 +33,40 @@ export class FirebaseService {
   private auth: Auth;
   private db: Firestore;
   
-  // Signal za praćenje trenutnog korisnika (moderni Angular pristup)
+ 
   currentUser = signal<User | null>(null);
   isLoading = signal<boolean>(false);
 
   constructor() {
-    // 1. Inicijalizuj Firebase
+    
     this.app = initializeApp(environment.firebaseConfig);
     
-    // 2. Inicijalizuj Auth
+  
     this.auth = getAuth(this.app);
     
-    // 3. Inicijalizuj Firestore
+    
     this.db = getFirestore(this.app);
     
-    // 4. Pratite stanje autentifikacije
+    
     this.setupAuthListener();
   }
 
   private setupAuthListener(): void {
     onAuthStateChanged(this.auth, (user) => {
-      this.currentUser.set(user);
+     
+      this.currentUser.set(user); 
       console.log('Auth stanje:', user ? `Prijavljen: ${user.email}` : 'Odjavljen');
       
-      // Automatski učitaj temu kada se korisnik prijavi
+   
       if (user) {
         this.loadUserTheme();
       }
     });
   }
+  
+ 
 
-  // REGISTRACIJA
+ 
   async register(email: string, password: string, themeId: string = 'green') {
     this.isLoading.set(true);
     try {
@@ -66,7 +76,7 @@ export class FirebaseService {
         password
       );
       
-      // Sačuvaj temu korisnika prilikom registracije
+     
       await this.saveUserTheme(themeId);
       
       console.log('✅ Korisnik registrovan:', userCredential.user.email);
@@ -82,7 +92,7 @@ export class FirebaseService {
     }
   }
 
-  // LOGIN
+  
   async login(email: string, password: string) {
     this.isLoading.set(true);
     try {
@@ -104,7 +114,7 @@ export class FirebaseService {
     }
   }
 
-  // LOGOUT
+  
   async logout() {
     try {
       await signOut(this.auth);
@@ -116,7 +126,7 @@ export class FirebaseService {
     }
   }
 
-  // TEME: Sačuvaj temu korisnika u Firestore
+ 
   async saveUserTheme(themeId: string) {
     const user = this.currentUser();
     if (!user) {
@@ -130,7 +140,7 @@ export class FirebaseService {
         theme: themeId,
         email: user.email,
         updatedAt: new Date().toISOString()
-      }, { merge: true }); // merge ažurira samo promenjena polja
+      }, { merge: true });
       
       console.log('🎨 Tema sačuvana:', themeId);
     } catch (error) {
@@ -138,7 +148,7 @@ export class FirebaseService {
     }
   }
 
-  // TEME: Učitaj temu korisnika iz Firestore
+  
   async loadUserTheme(): Promise<string | null> {
     const user = this.currentUser();
     if (!user) return null;
@@ -157,7 +167,38 @@ export class FirebaseService {
     }
   }
 
-  // POMOĆNA: Pretvori Firebase greške u čitljive poruke
+ 
+  async getCollectionByUID(collectionName: string, userId: string): Promise<any[]> {
+    const collRef = collection(this.db, collectionName);
+    const q = query(collRef, where("userId", "==", userId));
+    const querySnapshot = await getDocs(q);
+    
+   
+    return querySnapshot.docs.map((doc: any) => ({ 
+      id: doc.id, 
+      ...doc.data() 
+    }));
+  }
+
+ 
+  async addDocument(collectionName: string, data: any): Promise<string> {
+  
+    const docData = { ...data, date: Timestamp.fromDate(data.date) };
+    
+    const docRef = await addDoc(collection(this.db, collectionName), docData);
+    return docRef.id;
+  }
+
+
+  async updateDocument(collectionName: string, docId: string, data: any): Promise<void> {
+   
+    const docData = { ...data, date: Timestamp.fromDate(data.date) };
+    
+    const docRef = doc(this.db, collectionName, docId);
+    await updateDoc(docRef, docData);
+  }
+  
+ 
   private getFriendlyError(errorCode: string): string {
     const errors: { [key: string]: string } = {
       'auth/email-already-in-use': 'Email adresa je već u upotrebi.',
@@ -171,12 +212,13 @@ export class FirebaseService {
     return errors[errorCode] || 'Došlo je do greške. Pokušajte ponovo.';
   }
 
-  // GETTERI
+
   getAuthInstance(): Auth {
     return this.auth;
   }
   
-  isAuthenticated(): boolean {
+
+  isAuthenticatedValue(): boolean {
     return this.currentUser() !== null;
   }
 }

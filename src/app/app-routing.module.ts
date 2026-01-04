@@ -1,36 +1,42 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { Routes } from '@angular/router';
+
+import { MainLayoutComponent } from './layout/main-layout/main-layout.component';
+import { LoginComponent } from './features/auth/login/login.component';
+import { RegisterComponent } from './features/auth/register/register.component';
 import { HomeComponent } from './home/home.component';
-import { CoursesListComponent } from './courses/courses-list/courses-list.component';
-import { ContactComponent } from './contact/contact.component';
 import { StudentFunZoneComponent } from './student-fun-zone/student-fun-zone.component';
 
-const routes: Routes = [
-  { path: '', component: HomeComponent },
-  { path: 'courses', component: CoursesListComponent },
-  { path: 'contact', component: ContactComponent },
-  { path: 'student-fun-zone', component: StudentFunZoneComponent },
-  
-  // Lazy loading za feature module
-  { 
-    path: 'auth', 
-    loadChildren: () => import('./features/auth/auth.module').then(m => m.AuthModule) 
-  },
-  { 
-    path: 'dashboard', 
-    loadChildren: () => import('./features/dashboard/dashboard.module').then(m => m.DashboardModule) 
-  },
-  { 
-    path: 'statistics', 
-    loadChildren: () => import('./features/statistics/statistics.module').then(m => m.StatisticsModule) 
-  },
-  
-  // Fallback
-  { path: '**', redirectTo: '' }
-];
+import { DashboardComponent } from './features/dashboard/dashboard.component';
 
-@NgModule({
-  imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
-})
-export class AppRoutingModule { }
+
+export const routes: Routes = [
+  { path: 'login', component: LoginComponent },
+  { path: 'register', component: RegisterComponent },
+
+  {
+    path: '',
+    component: MainLayoutComponent,
+    children: [
+      { path: 'home', component: HomeComponent },
+      
+      // { path: 'courses', component:  },
+      // { path: 'schedule', component:  },
+      // { path: 'contact', component: }, 
+      
+      { 
+        path: 'fun-zone', 
+        component: StudentFunZoneComponent,
+        children: [
+
+           { path: 'dashboard', component: DashboardComponent },
+           
+           { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+        ]
+      },
+      
+      { path: '', redirectTo: 'login', pathMatch: 'full' },
+    ]
+  },
+
+  { path: '**', redirectTo: 'login' }
+];

@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 
-// Angular Material
+
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -12,7 +12,6 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 
-// Servisi
 import { FirebaseService } from 'src/app/core/services/firebase.service';
 import { ThemeService, Theme } from 'src/app/core/services/theme.service';
 
@@ -44,7 +43,7 @@ export class RegisterComponent {
   isLoading = signal(false);
   errorMessage = signal('');
   
-  // Dostupne teme
+
   availableThemes: Theme[] = this.themeService.getAvailableThemes();
   
   constructor() {
@@ -56,7 +55,7 @@ export class RegisterComponent {
     }, { validator: this.passwordMatchValidator });
   }
   
-  // Validator za proveru da li se lozinke podudaraju
+  
   passwordMatchValidator(form: FormGroup) {
     const password = form.get('password')?.value;
     const confirmPassword = form.get('confirmPassword')?.value;
@@ -69,32 +68,32 @@ export class RegisterComponent {
   }
   
   async onSubmit() {
-    if (this.registerForm.invalid) return;
-    
-    this.isLoading.set(true);
-    this.errorMessage.set('');
-    
-    const { email, password, theme } = this.registerForm.value;
-    
-    const result = await this.firebaseService.register(email, password, theme);
-    
-    this.isLoading.set(false);
-    
-    if (result.success) {
-      // Postavi temu odmah nakon registracije
-      this.themeService.setTheme(theme);
-      
-      // Preusmeri na dashboard
-      this.router.navigate(['/dashboard']);
-    } else {
-      const errorMsg = result.error || 'Došlo je do nepoznate greške pri registraciji';
-      this.errorMessage.set(errorMsg);
-      this.registerForm.get('password')?.reset();
-      this.registerForm.get('confirmPassword')?.reset();
-    }
-  }
+  if (this.registerForm.invalid) return;
   
-  // Pomoćne metode za template
+  this.isLoading.set(true);
+  this.errorMessage.set('');
+  
+  const { email, password, theme } = this.registerForm.value;
+  
+  const result = await this.firebaseService.register(email, password, theme);
+  
+  this.isLoading.set(false);
+  
+  if (result.success) {
+    
+    this.themeService.setTheme(theme);
+    
+   
+    this.router.navigate(['/home']); 
+  } else {
+    const errorMsg = result.error || 'Došlo je do nepoznate greške pri registraciji';
+    this.errorMessage.set(errorMsg);
+    this.registerForm.get('password')?.reset();
+    this.registerForm.get('confirmPassword')?.reset();
+  }
+}
+  
+  
   get email() { return this.registerForm.get('email'); }
   get password() { return this.registerForm.get('password'); }
   get confirmPassword() { return this.registerForm.get('confirmPassword'); }

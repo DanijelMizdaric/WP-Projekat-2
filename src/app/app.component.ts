@@ -1,4 +1,4 @@
-import { Component, OnInit, effect } from '@angular/core'; // DODAJ effect
+import { Component, OnInit, effect } from '@angular/core'; 
 import { RouterOutlet } from '@angular/router';
 import { ThemeService } from './core/services/theme.service';
 import { FirebaseService } from './core/services/firebase.service';
@@ -17,7 +17,7 @@ export class AppComponent implements OnInit {
     private themeService: ThemeService,
     private firebaseService: FirebaseService
   ) {
-    // Pratite promene auth stanja KORISTEĆI effect
+   
     effect(() => {
       const user = this.firebaseService.currentUser();
       console.log('🔄 Auth state changed:', user ? user.email : 'Logged out');
@@ -27,9 +27,9 @@ export class AppComponent implements OnInit {
   ngOnInit() {
     this.themeService.getCurrentTheme();
     
-    // DEBUG: Proveri Firebase stanje
+    
     console.log('🔥 AppComponent initialized');
-    console.log('🔐 isAuthenticated:', this.firebaseService.isAuthenticated());
+    console.log('🔐 isAuthenticated:', this.firebaseService.isAuthenticatedValue());
     console.log('👤 currentUser:', this.firebaseService.currentUser());
   }
 }
