@@ -1,0 +1,77 @@
+<div class="login-container">
+  <mat-card class="login-card">
+    <mat-card-header>
+      <mat-card-title class="login-title">
+        <mat-icon>lock</mat-icon>
+        Prijava na IPI Dashboard
+      </mat-card-title>
+      <mat-card-subtitle>Unesite podatke za prijavu</mat-card-subtitle>
+    </mat-card-header>
+    
+    <mat-card-content>
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        <!-- Email -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Email adresa</mat-label>
+          <input matInput formControlName="email" type="email" placeholder="vas@email.com">
+          <mat-icon matPrefix>email</mat-icon>
+          
+          <mat-error *ngIf="email?.hasError('required')">
+            Email je obavezan
+          </mat-error>
+          <mat-error *ngIf="email?.hasError('email')">
+            Unesite validan email
+          </mat-error>
+        </mat-form-field>
+        
+        <!-- Password -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Lozinka</mat-label>
+          <input matInput formControlName="password" type="password" placeholder="●●●●●●">
+          <mat-icon matPrefix>lock</mat-icon>
+          
+          <mat-error *ngIf="password?.hasError('required')">
+            Lozinka je obavezna
+          </mat-error>
+          <mat-error *ngIf="password?.hasError('minlength')">
+            Lozinka mora imati najmanje 6 karaktera
+          </mat-error>
+        </mat-form-field>
+        
+        <!-- Error Message -->
+        <div *ngIf="errorMessage()" class="error-message">
+          <mat-icon>error</mat-icon>
+          {{ errorMessage() }}
+        </div>
+        
+        <!-- Submit Button -->
+        <button 
+          mat-raised-button 
+          color="primary" 
+          type="submit" 
+          class="full-width"
+          [disabled]="loginForm.invalid || isLoading()"
+        >
+          <mat-spinner diameter="20" *ngIf="isLoading()"></mat-spinner>
+          <span *ngIf="!isLoading()">
+            <mat-icon>login</mat-icon>
+            Prijavi se
+          </span>
+        </button>
+      </form>
+      
+      <!-- Links -->
+      <div class="links-section">
+        <a routerLink="/auth/register" class="register-link">
+          <mat-icon>person_add</mat-icon>
+          Nemate nalog? Registrujte se
+        </a>
+        
+        <a routerLink="/fun-zone" class="guest-link">
+          <mat-icon>games</mat-icon>
+          Nastavite kao gost
+        </a>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

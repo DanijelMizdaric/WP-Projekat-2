@@ -1,0 +1,66 @@
+.page-content-card {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto 40px;
+    background: white;
+    padding: 40px;
+    box-sizing: border-box;
+    border-radius: 0 0 20px 20px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+    min-height: 500px;
+    position: relative;
+    overflow: hidden;
+    flex: 1;
+}
+
+.page-content-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #ff6b6b, #667eea, #764ba2);
+}
+
+.page-content {
+    overflow: hidden; 
+}
+
+.page-content img {
+    float: right;
+    margin: 0 0 20px 30px;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    max-width: 45%;
+    height: auto;
+    shape-outside: margin-box;
+}
+
+.page-content ol {
+    margin-top: 15px;
+    margin-bottom: 30px;
+    padding-left: 20px;
+}
+
+.page-content h3 {
+    margin-top: 25px;
+    
+    padding-top: 10px;
+    border-top: 1px dashed #eee;
+}
+
+@media (max-width: 768px) {
+    .page-content-card {
+        width: 95%;
+        margin: 20px auto;
+        padding: 20px;
+    }
+    
+    .page-content img {
+        float: none;
+        margin: 20px auto;
+        max-width: 100%;
+        display: block;
+    }
+}

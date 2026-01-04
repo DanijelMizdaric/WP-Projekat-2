@@ -1,0 +1,96 @@
+<mat-card class="habit-tracker-card">
+  <mat-card-header>
+    <mat-card-title class="title">
+      <mat-icon>check_circle</mat-icon>
+      Habit Tracker
+    </mat-card-title>
+    <mat-card-subtitle>Prati svoje dnevne navike</mat-card-subtitle>
+  </mat-card-header>
+  
+  <mat-card-content>
+    <!-- Progress Stats -->
+    <div class="stats-row">
+      <div class="stat">
+        <span class="stat-value">{{ completionPercentage }}%</span>
+        <span class="stat-label">Danas</span>
+      </div>
+      <div class="stat">
+        <span class="stat-value">{{ streakCount }}</span>
+        <span class="stat-label">Rekord</span>
+      </div>
+      <div class="stat">
+        <span class="stat-value">{{ habits().length }}</span>
+        <span class="stat-label">Navika</span>
+      </div>
+    </div>
+    
+    <!-- Progress Bar -->
+    <mat-progress-bar 
+      mode="determinate" 
+      [value]="completionPercentage"
+      color="primary">
+    </mat-progress-bar>
+    
+    <!-- Add New Habit -->
+    <div class="add-habit-form">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Nova navika</mat-label>
+        <input 
+          matInput 
+          [(ngModel)]="newHabitTitle" 
+          (keyup.enter)="addHabit()"
+          placeholder="Npr. 'Pročitaj knjigu 30 minuta'">
+      </mat-form-field>
+      <button mat-raised-button color="primary" (click)="addHabit()">
+        <mat-icon>add</mat-icon>
+        Dodaj
+      </button>
+    </div>
+    
+    <!-- Habits List -->
+    <div class="habits-list">
+      <div *ngFor="let habit of habits()" class="habit-item">
+       
+        <div class="habit-main">
+          <mat-checkbox 
+            [checked]="habit.completed"
+            (change)="toggleHabit(habit)"
+            color="primary"
+            class="habit-checkbox">
+          </mat-checkbox>
+          
+          <div class="habit-content" [class.completed]="habit.completed">
+            <span class="habit-title">{{ habit.title }}</span>
+          </div>
+        </div>
+        
+      
+        <div class="habit-actions">
+          <span class="habit-streak">🔥 {{ habit.streak }}/d</span>
+          <button mat-icon-button color="warn" (click)="deleteHabit(habit.id)" 
+                  class="delete-btn" matTooltip="Obriši">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+      </div>
+      
+      <!-- Empty State -->
+      <div *ngIf="habits().length === 0" class="empty-state">
+        <mat-icon>checklist</mat-icon>
+        <p>Nemaš dodanih navika. Dodaj prvu!</p>
+      </div>
+    </div>
+  </mat-card-content>
+  
+  <mat-card-actions>
+    <button mat-button (click)="resetDay()" color="accent">
+      <mat-icon>refresh</mat-icon>
+      Resetuj dan
+    </button>
+    <span class="spacer"></span>
+    <button mat-button [routerLink]="['/dashboard/habits']">
+      <mat-icon>open_in_full</mat-icon>
+      Detalji
+    </button>
+  </mat-card-actions>
+</mat-card>

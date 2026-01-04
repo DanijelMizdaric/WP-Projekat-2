@@ -1,0 +1,140 @@
+.page-content-card {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto 40px;
+    background: white;
+    padding: 40px;
+    box-sizing: border-box;
+    border-radius: 0 0 20px 20px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+    min-height: 500px;
+    position: relative;
+    overflow: hidden;
+    flex: 1;
+}
+
+.page-content-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #ff6b6b, #667eea, #764ba2);
+}
+
+.page-content img {
+    float: right;
+    margin: 0 0 20px 30px;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    max-width: 45%;
+    height: auto;
+    shape-outside: margin-box;
+}
+
+/* Adresa se mora obaviti oko floatovane slike */
+.address-block p:nth-child(2) {
+    clear: left;
+}
+
+/* STILOVI ZA FORMU */
+.contact-form {
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px dashed #ccc;
+    clear: both;
+}
+
+.contact-form h3 {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.contact-form fieldset {
+    border: 1px solid #e0e0e0;
+    padding: 25px;
+    border-radius: 8px;
+}
+
+.contact-form legend {
+    font-size: 1.1em;
+    font-weight: bold;
+    padding: 0 10px;
+    color: #333;
+}
+
+.contact-form label {
+    display: block;
+    margin-top: 15px;
+    margin-bottom: 5px;
+    font-weight: 600;
+}
+
+.contact-form input[type="text"],
+.contact-form input[type="email"],
+.contact-form textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 1em;
+    transition: border-color 0.3s;
+}
+
+.contact-form input:focus,
+.contact-form textarea:focus {
+    border-color: #667eea;
+    outline: none;
+}
+
+.contact-form textarea {
+    resize: vertical;
+}
+
+.form-actions {
+    text-align: center;
+    margin-top: 25px;
+}
+
+.contact-form button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1em;
+    cursor: pointer;
+    font-weight: bold;
+    color: white;
+    transition: background 0.3s;
+    white-space: nowrap;
+}
+
+.contact-form button[type="submit"] {
+    background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+}
+
+.contact-form .reset-button {
+    background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+    margin-left: 10px;
+}
+
+.contact-form button:hover {
+    opacity: 0.9;
+}
+
+
+@media (max-width: 768px) {
+    .page-content-card {
+        width: 95%;
+        margin: 20px auto;
+        padding: 20px;
+    }
+    
+    .page-content img {
+        float: none;
+        margin: 20px auto;
+        max-width: 100%;
+        display: block;
+    }
+}

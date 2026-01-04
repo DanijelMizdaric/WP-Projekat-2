@@ -1,0 +1,29 @@
+<header class="main-header">
+    <a routerLink="/main">
+        <img src="assets/slike/logo-ipi.png" alt="Kursevi IPI">
+    </a>
+</header>
+
+<nav class="main-nav">
+    <ul>
+        <li><a routerLink="/main" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">O kursevima</a></li>
+        
+        <li><a routerLink="/main/courses" routerLinkActive="active">Popis kurseva</a></li>
+        
+        <li><a routerLink="/main/schedule" routerLinkActive="active">Raspored kurseva</a></li>
+        
+        <li><a routerLink="/main/funzone" routerLinkActive="active">Student Fun Zone</a></li> 
+        
+        <li><a routerLink="/main/contact" routerLinkActive="active">Kontakt</a></li>
+
+        <li class="auth-action">
+            <a routerLink="/login" class="auth-button">Login</a>
+        </li>
+    </ul>
+</nav>
+
+<router-outlet></router-outlet>
+
+<footer class="main-footer">
+    &copy; Internacionalna poslovno-informaciona akademija Tuzla
+</footer>

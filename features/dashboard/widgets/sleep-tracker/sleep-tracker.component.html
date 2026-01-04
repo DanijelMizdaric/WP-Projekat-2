@@ -1,0 +1,131 @@
+<mat-card class="sleep-tracker-card">
+  <mat-card-header>
+    <mat-card-title class="title">
+      <mat-icon>bedtime</mat-icon>
+      Sleep Tracker
+    </mat-card-title>
+    <mat-card-subtitle>Prati svoje obrasce spavanja</mat-card-subtitle>
+  </mat-card-header>
+  
+  <mat-card-content>
+    <div class="stats-overview">
+      <div class="stat-item">
+        <div class="stat-value">{{ averageHours }}h</div>
+        <div class="stat-label">Prosek</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value">
+          <mat-icon>{{ qualityIcon }}</mat-icon>
+          {{ qualityAverage.toFixed(1) }}
+        </div>
+        <div class="stat-label">Kvalitet</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value">{{ goalProgress }}%</div>
+        <div class="stat-label">Cilj</div>
+      </div>
+    </div>
+    
+    <div class="goal-section">
+      <div class="goal-header">
+        <span>Cilj: 8 sati dnevno</span>
+        <span>{{ averageHours.toFixed(1) }}h / 8h</span>
+      </div>
+      <mat-progress-bar 
+        mode="determinate" 
+        [value]="goalProgress"
+        color="primary">
+      </mat-progress-bar>
+    </div>
+    
+    <div class="recommendation" *ngIf="recommendation">
+      <mat-icon>lightbulb</mat-icon>
+      <span>{{ recommendation }}</span>
+    </div>
+    
+    <div class="today-entry">
+      <h3>Današnje spavanje</h3>
+      
+      <div class="entry-form">
+        <div class="form-group">
+          <label>Sati spavanja:</label>
+          <div class="hours-input">
+            <button mat-icon-button (click)="decreaseHours()">
+              <mat-icon>remove</mat-icon>
+            </button>
+            <span class="hours-value">{{ todayHours() }}h</span>
+            <button mat-icon-button (click)="increaseHours()">
+              <mat-icon>add</mat-icon>
+            </button>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label>Kvalitet spavanja:</label>
+          <div class="quality-selector">
+            <button 
+              *ngFor="let star of [1, 2, 3, 4, 5]"
+              class="quality-btn"
+              [class.active]="todayQuality() === star"
+              (click)="setQuality(star)">
+              {{ star === todayQuality() ? '★' : '☆' }}
+            </button>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <mat-form-field appearance="outline" class="notes-input">
+            <mat-label>Bilješke (opciono)</mat-label>
+            <textarea 
+              matInput 
+              [ngModel]="todayNotes()" 
+              (ngModelChange)="todayNotes.set($event)"
+              rows="2"
+              placeholder="Npr. 'Dobro spavano, bez prekida'">
+            </textarea>
+          </mat-form-field>
+        </div>
+        
+        <button 
+          mat-raised-button 
+          color="primary" 
+          class="submit-btn"
+          (click)="addTodaySleep()">
+          <mat-icon>add</mat-icon>
+          Dodaj današnje spavanje
+        </button>
+      </div>
+    </div>
+    
+    <div class="weekly-chart" *ngIf="sleepRecords().length > 0">
+      <h3>Poslednjih 7 dana</h3>
+      <div class="chart-container">
+        <div *ngFor="let record of sleepRecords()" class="chart-bar">
+          <div 
+            class="bar" 
+            [style.height.%]="(record.hours / 12) * 100">
+            <span class="bar-value">{{ record.hours }}h</span>
+          </div>
+          <div class="bar-label">{{ getDayName(record.date) }}</div>
+        </div>
+      </div>
+    </div>
+    
+    <div *ngIf="isLoading()" class="loading">
+      <mat-progress-spinner mode="indeterminate" diameter="40"></mat-progress-spinner>
+      <p>Učitavanje...</p>
+    </div>
+  </mat-card-content>
+  
+  <mat-card-actions>
+    <button mat-button color="accent">
+      <mat-icon>history</mat-icon>
+      Istorija
+    </button>
+    <span class="spacer"></span>
+    <button mat-button [routerLink]="['/dashboard/sleep']">
+      <mat-icon>open_in_full</mat-icon>
+      Detalji
+    </button>
+  </mat-card-actions>
+</mat-card>

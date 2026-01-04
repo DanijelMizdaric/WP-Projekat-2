@@ -1,0 +1,65 @@
+/* STILOVI ZA ARTICLE (koji odgovaraju originalnom 'article') */
+.page-content-card {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto 40px;
+    background: white;
+    padding: 40px;
+    box-sizing: border-box;
+    border-radius: 0 0 20px 20px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+    min-height: 500px;
+    position: relative;
+    overflow: hidden;
+    flex: 1;
+}
+
+.page-content-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #ff6b6b, #667eea, #764ba2);
+}
+
+.page-content {
+    /* U originalnom kodu nema dodatnih stilova za article wrapper, 
+       ali je možda potrebno za flex */
+}
+
+/* STILOVI ZA SLIKU UNUTAR ARTICLE */
+.page-content img {
+    float: right;
+    margin: 0 0 20px 30px;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    max-width: 45%;
+    shape-outside: margin-box;
+}
+
+/* STILOVI ZA PARAGRAFE */
+.page-content p:first-of-type::first-letter {
+    font-size: 3em;
+    float: left;
+    line-height: 1;
+    margin: 0 8px 0 0;
+    color: #667eea;
+    font-weight: bold;
+}
+
+/* MEDIA QUERIES ZA HOME KOMPONENTU */
+@media (max-width: 768px) {
+    .page-content-card {
+        width: 95%;
+        margin: 20px auto;
+    }
+    
+    .page-content img {
+        float: none;
+        margin: 20px auto;
+        max-width: 100%;
+        display: block;
+    }
+}
