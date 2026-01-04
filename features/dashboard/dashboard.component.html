@@ -1,125 +1,140 @@
-<!-- Navbar -->
-<mat-toolbar color="primary" class="dashboard-toolbar">
-  <div class="toolbar-left">
-    <button mat-icon-button>
-      <mat-icon>menu</mat-icon>
-    </button>
-    <span class="logo">📊 IPI Dashboard</span>
-  </div>
-  
-  <div class="toolbar-right">
-    <!-- Theme Selector -->
-    <button mat-button [matMenuTriggerFor]="themeMenu">
-      <mat-icon>palette</mat-icon>
-      <span>{{ currentTheme().name }}</span>
-    </button>
-    <mat-menu #themeMenu="matMenu">
-      <button mat-menu-item *ngFor="let theme of availableThemes" 
-              (click)="changeTheme(theme.id)">
-        <span class="theme-color" [style.background]="theme.primaryColor"></span>
-        {{ theme.name }}
+<div class="dashboard-container">
+  <!-- Navbar -->
+  <mat-toolbar color="primary" class="dashboard-toolbar">
+    <div class="toolbar-left">
+      <button mat-icon-button (click)="toggleSidenav()" matTooltip="Meni">
+        <mat-icon>menu</mat-icon>
       </button>
-    </mat-menu>
+      <span class="logo">📊 IPI Dashboard</span>
+    </div>
     
-    <!-- User Menu -->
-    <button mat-button [matMenuTriggerFor]="userMenu">
-      <mat-icon>person</mat-icon>
-      <span>{{ getShortUsername() }}</span>  
-    </button>
-    <mat-menu #userMenu="matMenu">
-      <button mat-menu-item>
-        <mat-icon>settings</mat-icon>
-        Podešavanja
+    <div class="toolbar-right">
+      <!-- Widget Selector Button -->
+      <button mat-button (click)="openWidgetSelector()" class="widget-selector-btn" matTooltip="Personalizuj dashboard">
+        <mat-icon>dashboard_customize</mat-icon>
+        <span class="btn-text">Widget-i</span>
       </button>
-      <button mat-menu-item (click)="logout()">
-        <mat-icon>logout</mat-icon>
-        Odjavi se
+      
+      <!-- Theme Selector -->
+      <button mat-button [matMenuTriggerFor]="themeMenu" matTooltip="Promijeni temu">
+        <mat-icon>palette</mat-icon>
+        <span class="btn-text">{{ currentTheme().name }}</span>
       </button>
-    </mat-menu>
-  </div>
-</mat-toolbar>
+      <mat-menu #themeMenu="matMenu">
+        <button mat-menu-item *ngFor="let theme of availableThemes" 
+                (click)="changeTheme(theme.id)">
+          <span class="theme-color" [style.background]="theme.primaryColor"></span>
+          {{ theme.name }}
+        </button>
+      </mat-menu>
+      
+      <!-- User Menu -->
+      <div *ngIf="user; else loginButton">
+        <button mat-button [matMenuTriggerFor]="userMenu" matTooltip="Korisnički meni">
+          <mat-icon>person</mat-icon>
+          <span class="btn-text">{{ getShortUsername() }}</span>  
+        </button>
+        <mat-menu #userMenu="matMenu">
+          <button mat-menu-item>
+            <mat-icon>settings</mat-icon>
+            Podešavanja
+          </button>
+          <button mat-menu-item (click)="logout()">
+            <mat-icon>logout</mat-icon>
+            Odjavi se
+          </button>
+        </mat-menu>
+      </div>
+      
+      <ng-template #loginButton>
+        <button mat-button (click)="goToLogin()" matTooltip="Prijavi se">
+          <mat-icon>login</mat-icon>
+          <span class="btn-text">Prijavi se</span>
+        </button>
+      </ng-template>
+    </div>
+  </mat-toolbar>
 
-<!-- Main Content -->
-<main class="dashboard-content">
-  <div class="welcome-section">
-    <h1>👋 Dobrodošao, {{ getUsername() }}!</h1>
-    <p>Ovo je tvoj Personal Life Dashboard. Dodaj widget-e za praćenje navika, spavanja, učenja i više.</p>
-  </div>
-  
-  <!-- Widget Grid -->
-  <mat-grid-list cols="4" rowHeight="600px" gutterSize="16px">
-    <!-- Habit Tracker -->
-    <mat-grid-tile colspan="2" rowspan="1">
-      <app-habit-tracker></app-habit-tracker>
-    </mat-grid-tile>
+  <!-- Main Content -->
+  <main class="dashboard-content">
+    <div class="welcome-section">
+      <h1>👋 Dobrodošao, {{ getUsername() }}!</h1>
+      <p>Ovo je tvoj Personal Life Dashboard. Upravljaj widget-ima koje želiš vidjeti.</p>
+      
+      <div class="dashboard-actions">
+        <button mat-raised-button color="primary" (click)="openWidgetSelector()">
+          <mat-icon>dashboard_customize</mat-icon>
+          Personalizuj Dashboard
+        </button>
+        
+        <div class="widget-stats">
+          <span class="stat-item">
+            <mat-icon>widgets</mat-icon>
+            {{ activeWidgets().length }} aktivnih widget-a
+          </span>
+        </div>
+      </div>
+    </div>
     
-    <!-- Sleep Tracker -->
-    <mat-grid-tile colspan="1" rowspan="1">
-      <app-sleep-tracker></app-sleep-tracker>
-    </mat-grid-tile>
-    
-    <!-- Study Planner -->
-    <mat-grid-tile colspan="1" rowspan="1">
-      <mat-card class="widget-card">
-        <mat-card-header>
-          <mat-card-title>
-            <mat-icon>school</mat-icon>
-            Study Planner
-          </mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-          <p>Planiraj sate učenja i prati svoj napredak tokom sedmice.</p>
-          <button mat-button>Planiraj</button>
-        </mat-card-content>
-      </mat-card>
-    </mat-grid-tile>
-    
-    <!-- Water Intake -->
-    <mat-grid-tile colspan="1" rowspan="1">
-      <mat-card class="widget-card">
-        <mat-card-header>
-          <mat-card-title>
-            <mat-icon>local_drink</mat-icon>
-            Water Intake
-          </mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-          <p>Prati koliko vode popiješ dnevno. Cilj: 8 čaša dnevno.</p>
-          <button mat-button>+1 Čaša</button>
-        </mat-card-content>
-      </mat-card>
-    </mat-grid-tile>
-    
-    <!-- Mood Tracker -->
-    <mat-grid-tile colspan="1" rowspan="1">
-      <mat-card class="widget-card">
-        <mat-card-header>
-          <mat-card-title>
-            <mat-icon>mood</mat-icon>
-            Mood Tracker
-          </mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-          <p>Bilježi svoje raspoloženje tokom dana i prati obrasce.</p>
-          <button mat-button>Unesi raspoloženje</button>
-        </mat-card-content>
-      </mat-card>
-    </mat-grid-tile>
-    
-    <!-- Finance Tracker -->
-    <mat-grid-tile colspan="2" rowspan="1">
-      <mat-card class="widget-card">
-        <mat-card-header>
-          <mat-card-title>
-            <mat-icon>account_balance_wallet</mat-icon>
-            Finance Tracker
-          </mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-          <p>Prati svoje troškove i budžet za studentske potrebe.</p>
-          <button mat-raised-button color="accent">Dodaj trošak</button>
-        </mat-card-content>
-      </mat-card>
-    </mat-grid-tile>
-  </mat-grid-list>
-</main>
+    <!-- Dynamic Widget Grid -->
+    <div class="widget-grid-container">
+      <div class="widget-grid">
+        <!-- Habit Tracker Widget -->
+        <div *ngFor="let widget of activeWidgets()" 
+             class="widget-item"
+             [class]="getWidgetSizeClass(widget.size)"
+             (click)="navigateToWidgetDetails(widget.id)">
+          
+          <!-- Render actual widget components -->
+          <div *ngIf="widget.id === 'habit-tracker'">
+            <app-habit-tracker></app-habit-tracker>
+          </div>
+          
+          <div *ngIf="widget.id === 'sleep-tracker'">
+            <app-sleep-tracker></app-sleep-tracker>
+          </div>
+          
+          <!-- Placeholder for other widgets -->
+          <div *ngIf="!['habit-tracker', 'sleep-tracker'].includes(widget.id)" 
+               class="widget-placeholder">
+            <mat-card class="placeholder-card">
+              <mat-card-header>
+                <mat-card-title>
+                  <mat-icon>{{ widget.icon }}</mat-icon>
+                  {{ widget.title }}
+                </mat-card-title>
+                <mat-card-subtitle>{{ widget.category }}</mat-card-subtitle>
+              </mat-card-header>
+              <mat-card-content>
+                <p>{{ widget.description }}</p>
+                <div class="placeholder-info">
+                  <mat-chip color="primary">{{ widget.size === 'large' ? 'Veliki' : widget.size === 'medium' ? 'Srednji' : 'Mali' }}</mat-chip>
+                  <p class="coming-soon">U pripremi...</p>
+                </div>
+              </mat-card-content>
+              <mat-card-actions>
+                <button mat-button color="accent" (click)="$event.stopPropagation()">
+                  <mat-icon>info</mat-icon>
+                  Detalji
+                </button>
+              </mat-card-actions>
+            </mat-card>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Empty Dashboard State -->
+      <div *ngIf="!hasActiveWidgets" class="empty-dashboard">
+        <div class="empty-content">
+          <mat-icon class="empty-icon">dashboard</mat-icon>
+          <h3>Tvoj dashboard je prazan</h3>
+          <p>Dodaj widget-e koje želiš pratiti kako bi personalizovao svoj dashboard</p>
+          <button mat-raised-button color="primary" (click)="openWidgetSelector()">
+            <mat-icon>add</mat-icon>
+            Dodaj widget-e
+          </button>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>

@@ -11,7 +11,6 @@ import { MatListModule } from '@angular/material/list';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 
-
 import { FirebaseService } from 'src/app/core/services/firebase.service';
 
 export interface Habit {
@@ -28,7 +27,7 @@ export interface Habit {
   imports: [
     CommonModule,
     FormsModule,
-	RouterModule,
+    RouterModule,
     MatCardModule,
     MatButtonModule,
     MatIconModule,
@@ -43,12 +42,10 @@ export interface Habit {
 export class HabitTrackerComponent {
   private firebaseService = inject(FirebaseService);
   
- 
   habits = signal<Habit[]>([]);
   newHabitTitle = signal('');
   isLoading = signal(true);
   
- 
   get completionPercentage(): number {
     const completed = this.habits().filter(h => h.completed).length;
     const total = this.habits().length || 1;
@@ -60,27 +57,59 @@ export class HabitTrackerComponent {
   }
   
   constructor() {
+    console.log('🔍 HabitTrackerComponent se učitava');
+    console.log('👤 Trenutni korisnik:', this.firebaseService.currentUser());
+    
     this.loadHabits();
   }
   
   async loadHabits() {
     this.isLoading.set(true);
     
-   
-    setTimeout(() => {
-      this.habits.set([
-        { id: '1', title: 'Popij 8 čaša vode', completed: true, createdAt: new Date(), streak: 5 },
-        { id: '2', title: '1h učenja', completed: false, createdAt: new Date(), streak: 3 },
-        { id: '3', title: '30min vežbanja', completed: true, createdAt: new Date(), streak: 7 },
-        { id: '4', title: 'Pročitaj 10 strana', completed: false, createdAt: new Date(), streak: 2 },
-      ]);
-      this.isLoading.set(false);
-    }, 500);
+    // Provjeri da li je korisnik prijavljen
+    const userId = this.firebaseService.currentUser()?.uid;
+    
+    if (userId) {
+      // Pokušaj učitati iz Firebase
+      try {
+        const docs = await this.firebaseService.getCollectionByUID('habits', userId);
+        const habits = docs.map((doc: any) => ({
+          id: doc.id,
+          title: doc['title'],
+          completed: doc['completed'] || false,
+          createdAt: doc['createdAt']?.toDate?.() || new Date(),
+          streak: doc['streak'] || 0
+        }));
+        
+        this.habits.set(habits);
+        console.log('✅ Učitano iz Firebase:', habits.length, 'navika');
+      } catch (error) {
+        console.warn('⚠️ Nije moguće učitati iz Firebase, koristim demo podatke');
+        this.loadDemoHabits();
+      }
+    } else {
+      // Demo mod
+      console.log('🎮 Demo mod - koristim demo podatke');
+      this.loadDemoHabits();
+    }
+    
+    this.isLoading.set(false);
   }
   
-  addHabit() {
+  private loadDemoHabits() {
+    this.habits.set([
+      { id: '1', title: 'Popij 8 čaša vode', completed: true, createdAt: new Date(), streak: 5 },
+      { id: '2', title: '1h učenja', completed: false, createdAt: new Date(), streak: 3 },
+      { id: '3', title: '30min vežbanja', completed: true, createdAt: new Date(), streak: 7 },
+      { id: '4', title: 'Pročitaj 10 strana', completed: false, createdAt: new Date(), streak: 2 },
+    ]);
+  }
+  
+  async addHabit() {
     const title = this.newHabitTitle().trim();
     if (!title) return;
+    
+    console.log('➕ Dodajem naviku:', title);
     
     const newHabit: Habit = {
       id: Date.now().toString(),
@@ -90,14 +119,29 @@ export class HabitTrackerComponent {
       streak: 0
     };
     
+    // Dodaj lokalno
     this.habits.update(habits => [...habits, newHabit]);
     this.newHabitTitle.set('');
     
-   
-    console.log('Habit dodan:', newHabit);
+    // Pokušaj sačuvati u Firebase ako je korisnik prijavljen
+    const userId = this.firebaseService.currentUser()?.uid;
+    if (userId) {
+      try {
+        await this.firebaseService.addDocument('habits', {
+          ...newHabit,
+          userId: userId
+        });
+        console.log('✅ Habit sačuvan u Firebase');
+      } catch (error: any) {
+        console.warn('⚠️ Nije moguće sačuvati u Firebase:', error.message);
+      }
+    }
   }
   
+  // SAMO JEDNA toggleHabit metoda!
   toggleHabit(habit: Habit) {
+    console.log('🔄 Toggle navika:', habit.title);
+    
     this.habits.update(habits => 
       habits.map(h => 
         h.id === habit.id 
@@ -106,23 +150,45 @@ export class HabitTrackerComponent {
       )
     );
     
-    
-    console.log('Habit ažuriran:', habit);
+    // Firebase sync samo ako je korisnik prijavljen
+    const userId = this.firebaseService.currentUser()?.uid;
+    if (userId && habit.id) {
+      // Async bez čekanja
+      this.firebaseService.updateDocument('habits', habit.id, {
+        completed: !habit.completed,
+        streak: !habit.completed ? habit.streak + 1 : habit.streak
+      }).catch((err: any) => console.warn('Firebase sync failed:', err));
+    }
   }
   
   deleteHabit(habitId: string) {
+    console.log('🗑️ Brišem naviku:', habitId);
+    
     this.habits.update(habits => habits.filter(h => h.id !== habitId));
     
-   
-    console.log('Habit obrisan:', habitId);
+    // Ako FirebaseService nema deleteDocument, koristimo ovu logiku:
+    const userId = this.firebaseService.currentUser()?.uid;
+    if (userId) {
+      // Ako imaš deleteDocument metodu, koristi je:
+      // this.firebaseService.deleteDocument('habits', habitId)
+      //   .catch((err: any) => console.warn('Firebase delete failed:', err));
+      
+      console.log('Firebase delete bi ovde bio pozvan');
+    }
   }
   
   resetDay() {
+    console.log('🔄 Resetujem dan');
+    
     this.habits.update(habits => 
       habits.map(habit => ({ ...habit, completed: false }))
     );
     
-   
-    console.log('Dan resetovan');
+    // Update u Firebase ako je korisnik prijavljen
+    const userId = this.firebaseService.currentUser()?.uid;
+    if (userId) {
+      // Ovde bi trebalo update-ovati sve navike
+      console.log('Firebase reset bi ovde bio implementiran');
+    }
   }
 }

@@ -1,0 +1,103 @@
+<div class="widget-selector">
+  <div class="header">
+    <div class="header-content">
+      <h2>
+        <mat-icon>dashboard_customize</mat-icon>
+        Personalizuj Dashboard
+      </h2>
+      <p>Omogući ili onemogući widget-e koje želiš vidjeti</p>
+    </div>
+    <button mat-icon-button class="close-btn" (click)="close()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+  
+  <!-- Aktivni widget-i -->
+  <div class="section" *ngIf="activeWidgets().length > 0">
+    <h3 class="section-title">
+      <mat-icon>check_circle</mat-icon>
+      Aktivni widget-i ({{ activeWidgets().length }})
+    </h3>
+    
+    <div class="widget-grid">
+      <div *ngFor="let widget of activeWidgets()" 
+           class="widget-card active"
+           [style.border-left-color]="getCategoryColor(widget.category)">
+        <div class="widget-header">
+          <div class="widget-icon" [style.background]="getCategoryColor(widget.category)">
+            <mat-icon>{{ widget.icon }}</mat-icon>
+          </div>
+          <div class="widget-info">
+            <h4>{{ widget.title }}</h4>
+            <p class="widget-description">{{ widget.description }}</p>
+            <div class="widget-meta">
+              <span class="widget-category">{{ widget.category }}</span>
+              <span class="widget-size">{{ widget.size === 'large' ? 'Veliki' : widget.size === 'medium' ? 'Srednji' : 'Mali' }}</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="widget-actions">
+          <button mat-stroked-button color="warn" (click)="toggleWidget(widget)" class="action-btn">
+            <mat-icon>toggle_on</mat-icon>
+            Deaktiviraj
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Dostupni widget-i -->
+  <div class="section" *ngIf="availableWidgets().length > 0">
+    <h3 class="section-title">
+      <mat-icon>add_circle</mat-icon>
+      Dostupni widget-i ({{ availableWidgets().length }})
+    </h3>
+    
+    <div class="widget-grid">
+      <div *ngFor="let widget of availableWidgets()" 
+           class="widget-card available"
+           [style.border-left-color]="getCategoryColor(widget.category)">
+        <div class="widget-header">
+          <div class="widget-icon" [style.background]="getCategoryColor(widget.category)">
+            <mat-icon>{{ widget.icon }}</mat-icon>
+          </div>
+          <div class="widget-info">
+            <h4>{{ widget.title }}</h4>
+            <p class="widget-description">{{ widget.description }}</p>
+            <div class="widget-meta">
+              <span class="widget-category">{{ widget.category }}</span>
+              <span class="widget-size">{{ widget.size === 'large' ? 'Veliki' : widget.size === 'medium' ? 'Srednji' : 'Mali' }}</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="widget-actions">
+          <button mat-raised-button color="primary" (click)="toggleWidget(widget)" class="action-btn">
+            <mat-icon>add</mat-icon>
+            Aktiviraj
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Prazno stanje -->
+  <div *ngIf="activeWidgets().length === 0 && availableWidgets().length === 0" class="empty-state">
+    <mat-icon>error_outline</mat-icon>
+    <h3>Nema dostupnih widget-a</h3>
+    <p>Pokušajte osvježiti stranicu ili kontaktirajte podršku</p>
+  </div>
+  
+  <!-- Footer -->
+  <div class="footer">
+    <button mat-button color="warn" (click)="widgetService.resetToDefault()" class="reset-btn">
+      <mat-icon>restore</mat-icon>
+      Resetuj na podrazumijevano
+    </button>
+    <button mat-raised-button color="primary" (click)="close()" class="done-btn">
+      <mat-icon>done</mat-icon>
+      Gotovo
+    </button>
+  </div>
+</div>

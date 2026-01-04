@@ -1,9 +1,21 @@
+/* ===== OSNOVNI LAYOUT ===== */
+.dashboard-container {
+  min-height: 100vh;
+  background: var(--background-color);
+  display: flex;
+  flex-direction: column;
+}
+
+/* ===== TOOLBAR ===== */
 .dashboard-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 0 16px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   
   .toolbar-left {
     display: flex;
@@ -22,213 +34,432 @@
     align-items: center;
     gap: 16px;
     
+    .widget-selector-btn {
+      margin-right: 8px;
+    }
+    
+    .btn-text {
+      @media (max-width: 768px) {
+        display: none;
+      }
+    }
+    
     button {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
+      min-height: 40px;
     }
+  }
+  
+  .theme-color {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    margin-right: 8px;
+    vertical-align: middle;
+    border: 2px solid rgba(255, 255, 255, 0.2);
   }
 }
 
+/* ===== GLAVNI SADRŽAJ ===== */
 .dashboard-content {
+  flex: 1;
   padding: 24px;
-  min-height: calc(100vh - 64px);
-  background-color: var(--background-color);
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
+  
+  @media (max-width: 768px) {
+    padding: 16px;
+  }
 }
 
+/* ===== WELCOME SEKTOR ===== */
 .welcome-section {
   background: var(--card-bg);
   border-radius: 16px;
-  padding: 24px;
-  margin-bottom: 24px;
+  padding: 32px;
+  margin-bottom: 32px;
   box-shadow: var(--shadow-md);
   border: 1px solid var(--border-color);
   
+  @media (max-width: 768px) {
+    padding: 24px;
+  }
+  
+  @media (max-width: 480px) {
+    padding: 20px;
+  }
+  
   h1 {
-    color: var(--primary-color);
-    margin-bottom: 8px;
+    color: var(--text-color);
+    margin-bottom: 12px;
+    font-size: 2rem;
+    
+    @media (max-width: 768px) {
+      font-size: 1.5rem;
+    }
   }
   
   p {
     color: var(--text-color);
     opacity: 0.8;
-  }
-}
-
-/* ===== DODATNI CSS ZA GRID ===== */
-
-/* Host element */
-:host {
-  display: block;
-  height: 100vh;
-}
-
-/* Grid container improvements */
-mat-grid-list {
-  width: 100%;
-  margin: 0;
-  
-  /* Fix za tile spacing */
-  ::ng-deep .mat-grid-tile {
-    padding: 8px !important;
-  }
-  
-  /* Fix za tile content */
-  ::ng-deep .mat-grid-tile-content {
-    display: flex !important;
-    align-items: stretch !important;
-    justify-content: stretch !important;
-    padding: 0 !important;
-  }
-}
-
-/* Widget card improvements inside grid */
-mat-grid-tile {
-  .widget-card {
-    height: 100%;
-    width: 100%;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    border-radius: 12px;
-    border: 1px solid var(--border-color);
-    transition: all 0.3s ease;
+    margin-bottom: 24px;
+    font-size: 1.1rem;
+    line-height: 1.5;
     
-    &:hover {
-      transform: translateY(-4px);
-      box-shadow: var(--shadow-lg);
+    @media (max-width: 768px) {
+      font-size: 1rem;
+    }
+  }
+  
+  .dashboard-actions {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    flex-wrap: wrap;
+    
+    @media (max-width: 768px) {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 16px;
     }
     
-    /* Ensure mat-card fills tile */
-    &.mat-card {
-      height: 100%;
+    button {
       display: flex;
-      flex-direction: column;
-      
-      mat-card-header {
-        margin-bottom: 16px;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 20px;
+      font-weight: 500;
+    }
+    
+    .widget-stats {
+      .stat-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--text-color);
+        opacity: 0.8;
+        font-size: 0.95rem;
+        background: rgba(var(--primary-color-rgb), 0.05);
+        padding: 8px 16px;
+        border-radius: 8px;
+        border: 1px solid var(--border-color);
         
-        mat-card-title {
-          display: flex;
-          align-items: center;
-          gap: 8px;
+        mat-icon {
+          font-size: 18px;
+          width: 18px;
+          height: 18px;
           color: var(--primary-color);
         }
       }
+    }
+  }
+}
+
+/* ===== WIDGET GRID ===== */
+.widget-grid-container {
+  width: 100%;
+  margin-top: 24px;
+}
+
+.widget-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 24px;
+  
+  @media (max-width: 1200px) {
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  }
+  
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  .widget-item {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+    
+    &:hover {
+      transform: translateY(-4px);
+    }
+    
+    // Size classes za grid
+    &.widget-large {
+      grid-column: span 2;
       
-      mat-card-content {
-        flex-grow: 1;
+      @media (max-width: 768px) {
+        grid-column: span 1;
+      }
+    }
+    
+    &.widget-medium, &.widget-small {
+      grid-column: span 1;
+    }
+    
+    // Osiguraj da widget komponente popune prostor
+    app-habit-tracker,
+    app-sleep-tracker {
+      display: block;
+      height: 100%;
+      
+      .habit-tracker-card,
+      .sleep-tracker-card {
+        height: 100%;
+      }
+    }
+    
+    // Placeholder widget styles
+    .widget-placeholder {
+      height: 100%;
+      
+      .placeholder-card {
+        height: 100%;
+        min-height: 300px;
         display: flex;
         flex-direction: column;
-        justify-content: space-between;
+        background: var(--card-bg);
+        border-radius: 12px;
+        border: 1px solid var(--border-color);
+        box-shadow: var(--shadow-md);
+        transition: all 0.3s ease;
         
-        p {
-          color: var(--text-color);
-          opacity: 0.7;
+        &:hover {
+          box-shadow: var(--shadow-lg);
+          border-color: var(--primary-color);
+        }
+        
+        mat-card-header {
           margin-bottom: 16px;
+          
+          mat-card-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--primary-color);
+            font-size: 1.2rem;
+            
+            mat-icon {
+              color: var(--primary-color);
+            }
+          }
+          
+          mat-card-subtitle {
+            color: var(--text-color);
+            opacity: 0.7;
+            font-size: 0.9rem;
+          }
+        }
+        
+        mat-card-content {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          
+          p {
+            color: var(--text-color);
+            opacity: 0.8;
+            line-height: 1.5;
+            margin-bottom: 16px;
+            flex: 1;
+          }
+          
+          .placeholder-info {
+            margin-top: auto;
+            
+            mat-chip {
+              margin-bottom: 12px;
+              font-size: 0.8rem;
+              padding: 4px 12px;
+              height: 24px;
+              
+              ::ng-deep .mdc-evolution-chip__text-label {
+                font-size: 0.8rem;
+              }
+            }
+            
+            .coming-soon {
+              font-style: italic;
+              color: var(--text-color);
+              opacity: 0.6;
+              font-size: 0.9rem;
+              margin: 0;
+            }
+          }
+        }
+        
+        mat-card-actions {
+          padding: 16px !important;
+          margin: 0 !important;
+          border-top: 1px solid var(--border-color);
+          display: flex;
+          align-items: center;
+          
+          button {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+          }
         }
       }
     }
   }
 }
 
-/* Ensure child components fill space */
-app-habit-tracker,
-app-sleep-tracker {
-  display: block;
-  height: 100%;
-  width: 100%;
+/* ===== EMPTY DASHBOARD STATE ===== */
+.empty-dashboard {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+  background: var(--card-bg);
+  border-radius: 16px;
+  border: 2px dashed var(--border-color);
+  margin-top: 24px;
+  text-align: center;
+  
+  @media (max-width: 768px) {
+    min-height: 300px;
+    padding: 20px;
+  }
+  
+  .empty-content {
+    padding: 40px;
+    max-width: 500px;
+    
+    @media (max-width: 768px) {
+      padding: 20px;
+    }
+    
+    .empty-icon {
+      font-size: 72px;
+      width: 72px;
+      height: 72px;
+      color: var(--text-color);
+      opacity: 0.3;
+      margin-bottom: 24px;
+      
+      @media (max-width: 768px) {
+        font-size: 48px;
+        width: 48px;
+        height: 48px;
+        margin-bottom: 16px;
+      }
+    }
+    
+    h3 {
+      color: var(--text-color);
+      margin-bottom: 12px;
+      font-size: 1.5rem;
+      
+      @media (max-width: 768px) {
+        font-size: 1.3rem;
+      }
+    }
+    
+    p {
+      color: var(--text-color);
+      opacity: 0.7;
+      margin-bottom: 24px;
+      line-height: 1.5;
+      font-size: 1rem;
+    }
+    
+    button {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 24px;
+      margin: 0 auto;
+    }
+  }
 }
 
-.theme-color {
-  display: inline-block;
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  margin-right: 8px;
-  vertical-align: middle;
-  border: 2px solid rgba(255, 255, 255, 0.2);
-}
-
-/* ===== RESPONSIVE DESIGN ===== */
-
-/* Tablets */
-@media (max-width: 1200px) {
-  mat-grid-list {
-    // Za tablete: 3 kolone
-    $cols: 3;
+/* ===== DIALOG STYLING ===== */
+::ng-deep .widget-selector-dialog {
+  .mat-mdc-dialog-container {
+    padding: 0;
+    border-radius: 16px;
+    overflow: hidden;
+    max-width: 900px !important;
+    width: 90vw !important;
   }
   
-  mat-grid-tile[colspan="2"] {
-    grid-column: span 2;
+  .mat-mdc-dialog-surface {
+    border-radius: 16px !important;
   }
 }
 
-/* Smaller tablets */
-@media (max-width: 900px) {
-  .dashboard-content {
-    padding: 16px;
-  }
-  
-  .welcome-section {
-    padding: 16px;
-  }
-  
-  mat-grid-list {
-    // Za manje tablete: 2 kolone
-    $cols: 2;
-  }
-  
-  mat-grid-tile[colspan="2"] {
-    grid-column: span 2;
-  }
-  
-  mat-grid-tile[colspan="1"] {
-    grid-column: span 1;
-  }
+::ng-deep .widget-selector-backdrop {
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
 }
 
-/* Mobile */
-@media (max-width: 600px) {
+/* ===== THEME VARIJABLE FALLBACKS ===== */
+:root {
+  --primary-color: #27ae60;
+  --secondary-color: #2ecc71;
+  --background-color: #f8f9fa;
+  --card-bg: #ffffff;
+  --text-color: #2c3e50;
+  --border-color: #e0e0e0;
+  --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 8px 30px rgba(0, 0, 0, 0.12);
+  --primary-color-rgb: 39, 174, 96;
+}
+
+.dark-theme {
+  --primary-color: #6c5ce7;
+  --secondary-color: #a29bfe;
+  --background-color: #2d3436;
+  --card-bg: #3c4245;
+  --text-color: #dfe6e9;
+  --border-color: #4a5255;
+  --primary-color-rgb: 108, 92, 231;
+}
+
+/* ===== RESPONSIVE IMPROVEMENTS ===== */
+@media (max-width: 480px) {
   .dashboard-toolbar {
-    .logo {
-      font-size: 1.2rem;
+    padding: 0 12px;
+    
+    .toolbar-left {
+      .logo {
+        font-size: 1.2rem;
+      }
     }
     
     .toolbar-right {
       gap: 8px;
       
       button {
-        span {
-          display: none;
+        padding: 0 4px;
+        min-width: auto;
+        
+        mat-icon {
+          margin: 0;
         }
       }
     }
   }
   
-  mat-grid-list {
-    // Za mobile: 1 kolona
-    $cols: 1;
-  }
-  
-  mat-grid-tile[colspan="2"],
-  mat-grid-tile[colspan="1"] {
-    grid-column: span 1;
-  }
-}
-
-/* Extra small mobile */
-@media (max-width: 480px) {
-  .dashboard-content {
-    padding: 12px;
-  }
-  
   .welcome-section {
-    padding: 12px;
-    margin-bottom: 16px;
+    padding: 16px;
     
     h1 {
-      font-size: 1.5rem;
+      font-size: 1.3rem;
     }
+    
+    p {
+      font-size: 0.9rem;
+    }
+  }
+  
+  .widget-grid {
+    gap: 16px;
   }
 }

@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 
-// Angular Material
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -13,7 +12,6 @@ import { MatSliderModule } from '@angular/material/slider';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
-// Servisi
 import { FirebaseService } from 'src/app/core/services/firebase.service';
 
 export interface SleepRecord {
@@ -21,8 +19,7 @@ export interface SleepRecord {
   date: Date;
   hours: number;
   quality: 1 | 2 | 3 | 4 | 5;
-  // 👇 POPRAVKA: Dodali smo '| null' jer Firestore ne podržava 'undefined' za opciona polja.
-  notes?: string | null; 
+  notes?: string | null;
   userId?: string;
 }
 
@@ -55,7 +52,6 @@ export class SleepTrackerComponent {
   todayQuality = signal<1 | 2 | 3 | 4 | 5>(3);
   todayNotes = signal('');
   
-  // VRAĆENA LOGIKA ZA GET ACCESSOR-e (ISPRAVNO)
   get averageHours(): number {
     const records = this.sleepRecords();
     if (records.length === 0) return 0;
@@ -96,49 +92,64 @@ export class SleepTrackerComponent {
   }
   
   constructor() {
+    console.log('🔍 SleepTrackerComponent se učitava');
+    console.log('👤 Trenutni korisnik:', this.firebaseService.currentUser());
     this.loadSleepRecords();
   }
   
-  /** Učitava zapise o spavanju iz Firestore-a. */
   async loadSleepRecords() {
     this.isLoading.set(true);
     const userId = this.firebaseService.currentUser()?.uid;
     
     if (!userId) {
-        console.error('Korisnik nije prijavljen.');
-        this.isLoading.set(false);
-        return;
+      console.log('🎮 Demo mod - koristim demo podatke');
+      this.loadDemoRecords();
+      this.isLoading.set(false);
+      return;
     }
 
     try {
-        const docs = await this.firebaseService.getCollectionByUID('sleepRecords', userId);
-        
-        const records: SleepRecord[] = docs
-            .map((doc: any) => ({
-                id: doc.id,
-                // Proveravamo da li je date Timestamp (tipično za Firebase) ili već Date
-                date: (doc['date'] as any)?.toDate ? (doc['date'] as any).toDate() : new Date(doc['date']),
-                hours: doc['hours'],
-                quality: doc['quality'],
-                // Pošto sada model SleepRecord prihvata null, ovo je sigurno.
-                notes: doc['notes'] || null, 
-                userId: doc['userId']
-            }))
-            .filter((record: SleepRecord) => { 
-                const oneWeekAgo = new Date();
-                oneWeekAgo.setDate(new Date().getDate() - 7); 
-                return record.date >= oneWeekAgo;
-            })
-            .sort((a: SleepRecord, b: SleepRecord) => a.date.getTime() - b.date.getTime());
+      const docs = await this.firebaseService.getCollectionByUID('sleepRecords', userId);
+      
+      const records: SleepRecord[] = docs
+        .map((doc: any) => ({
+          id: doc.id,
+          date: (doc['date'] as any)?.toDate ? (doc['date'] as any).toDate() : new Date(doc['date']),
+          hours: doc['hours'],
+          quality: doc['quality'],
+          notes: doc['notes'] || null,
+          userId: doc['userId']
+        }))
+        .filter((record: SleepRecord) => { 
+          const oneWeekAgo = new Date();
+          oneWeekAgo.setDate(new Date().getDate() - 7); 
+          return record.date >= oneWeekAgo;
+        })
+        .sort((a: SleepRecord, b: SleepRecord) => a.date.getTime() - b.date.getTime());
 
-        this.sleepRecords.set(records);
-        
-    } catch (error) {
-        console.error("Greška pri učitavanju zapisa o spavanju:", error);
-        this.sleepRecords.set([]);
+      this.sleepRecords.set(records);
+      console.log('✅ Učitano iz Firebase:', records.length, 'zapisa');
+      
+    } catch (error: any) {
+      console.error("❌ Greška pri učitavanju:", error.message);
+      this.loadDemoRecords();
     } finally {
-        this.isLoading.set(false);
+      this.isLoading.set(false);
     }
+  }
+  
+  private loadDemoRecords() {
+    const demoRecords: SleepRecord[] = [
+      { id: '1', date: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000), hours: 7.5, quality: 4, notes: 'Dobar san' },
+      { id: '2', date: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000), hours: 8, quality: 5, notes: 'Odlično' },
+      { id: '3', date: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000), hours: 6.5, quality: 3, notes: 'Prekinut san' },
+      { id: '4', date: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000), hours: 8.5, quality: 4, notes: null },
+      { id: '5', date: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000), hours: 7, quality: 3, notes: 'Kasno legao' },
+      { id: '6', date: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000), hours: 9, quality: 5, notes: 'Vikend' },
+    ];
+    
+    this.sleepRecords.set(demoRecords);
+    console.log('📊 Demo podaci učitani');
   }
   
   increaseHours() {
@@ -153,49 +164,57 @@ export class SleepTrackerComponent {
     this.todayQuality.set(quality as 1 | 2 | 3 | 4 | 5);
   }
   
-  /** Dodaje ili ažurira zapis o spavanju u Firestore-u. */
   async addTodaySleep() {
+    console.log('➕ Dodajem današnje spavanje...');
+    
     const userId = this.firebaseService.currentUser()?.uid;
-    if (!userId) {
-        alert('Morate biti prijavljeni da biste dodali zapis.');
-        return;
-    }
-
     const today = new Date();
+    
+    // Pronađi postojeći zapis za danas
     const existingRecord = this.sleepRecords().find(r => 
       r.date.toDateString() === today.toDateString()
     );
 
-    const dataToSave: SleepRecord = {
-      id: existingRecord?.id || '',
+    // Kreiraj novi zapis
+    const newRecord: SleepRecord = {
+      id: existingRecord?.id || Date.now().toString(),
       date: today,
       hours: this.todayHours(),
       quality: this.todayQuality(),
-      // ISPRAVLJENO: Prazan string (trim() daje '') postaje null. Sada je kompatibilno sa SleepRecord interfejsom.
-      notes: this.todayNotes().trim() || null, 
-      userId: userId
+      notes: this.todayNotes().trim() || null,
+      userId: userId || 'demo-user'
     };
-
-    try {
-        if (existingRecord && existingRecord.id) {
-            await this.firebaseService.updateDocument('sleepRecords', existingRecord.id, dataToSave);
-            console.log('✅ Sleep record updated:', existingRecord.id);
-        } else {
-            const docId = await this.firebaseService.addDocument('sleepRecords', dataToSave);
-            dataToSave.id = docId;
-            console.log('✅ Sleep record added:', docId);
-        }
-        
-        await this.loadSleepRecords(); 
-        
-    } catch (error) {
-        console.error("❌ Greška pri dodavanju/ažuriranju zapisa:", error);
+    
+    // Dodaj/update lokalno
+    if (existingRecord) {
+      this.sleepRecords.update(records => 
+        records.map(r => r.id === existingRecord.id ? newRecord : r)
+      );
+      console.log('✅ Sleep record updated locally');
+    } else {
+      this.sleepRecords.update(records => [...records, newRecord]);
+      console.log('✅ Sleep record added locally');
     }
     
+    // Reset form
     this.todayNotes.set('');
+    
+    // Firebase sync SAMO ako je korisnik prijavljen
+    if (userId) {
+      try {
+        if (existingRecord && existingRecord.id) {
+          await this.firebaseService.updateDocument('sleepRecords', existingRecord.id, newRecord);
+          console.log('✅ Updated in Firebase');
+        } else {
+          await this.firebaseService.addDocument('sleepRecords', newRecord);
+          console.log('✅ Added to Firebase');
+        }
+      } catch (error: any) {
+        console.warn('⚠️ Firebase sync failed:', error.message);
+      }
+    }
   }
   
-  // VRAĆENA LOGIKA ZA POMOĆNE METODE (ISPRAVNO)
   getDayName(date: Date): string {
     const days = ['Ned', 'Pon', 'Uto', 'Sri', 'Čet', 'Pet', 'Sub'];
     return days[date.getDay()];
