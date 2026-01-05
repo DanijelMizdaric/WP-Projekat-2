@@ -10,24 +10,35 @@ import { WhiteboardComponent } from './components/funzone/whiteboard/whiteboard.
 import { MainLayoutComponent } from './layout/main-layout/main-layout.component';
 import { DashboardComponent } from './features/dashboard/dashboard.component';
 
-export const routes: Routes = [
-  // Prazna ruta -> login (ili možda dashboard ako je prijavljen)
-  { path: '', redirectTo: 'login', pathMatch: 'full' }, 
+// **DODAJ OVE IMPORTOVE:**
+import { HabitTrackerComponent } from './features/dashboard/widgets/habit-tracker/habit-tracker.component';
+import { SleepTrackerComponent } from './features/dashboard/widgets/sleep-tracker/sleep-tracker.component';
 
-  // Login i Register
+export const routes: Routes = [
+  { path: '', redirectTo: 'main', pathMatch: 'full' }, 
+  
   { path: 'login', component: LoginComponent }, 
   { path: 'register', component: RegisterComponent }, 
-
-  // ✅ DASHBOARD KAO SAMOSTALNA RUTA (IZVAN MAIN LAYOUT-A)
-  { path: 'dashboard', component: DashboardComponent },
-
-  // Main Layout (sadrži sve OSIM dashboard-a)
+  
+  // Dashboard SA children rutama za widget-e
+  { 
+    path: 'dashboard', 
+    component: DashboardComponent,
+    children: [
+      // **OVO JE VAŽNO:** prazna ruta ostaje dashboard
+      { path: '', redirectTo: '', pathMatch: 'full' },
+      // **DODAJ WIDGET RUTE:**
+      { path: 'habits', component: HabitTrackerComponent },
+      { path: 'sleep', component: SleepTrackerComponent },
+      // Dodaj i druge widget rute ako imaš
+    ]
+  },
+  
   {
     path: 'main', 
     component: MainLayoutComponent,
     children: [
       { path: '', component: HomeComponent }, 
-      // { path: 'dashboard', component: DashboardComponent }, // ❌ UKLONI OVO IZ OVDE
       { path: 'courses', component: CoursesComponent },
       { path: 'schedule', component: ScheduleComponent },
       { path: 'contact', component: ContactComponent }, 
@@ -42,5 +53,5 @@ export const routes: Routes = [
     ]
   },
   
-  { path: '**', redirectTo: 'login' }
+  { path: '**', redirectTo: 'main' }
 ];

@@ -1,6 +1,7 @@
 import { Injectable, signal, computed } from '@angular/core';
 import { HabitTrackerComponent } from 'src/app/features/dashboard/widgets/habit-tracker/habit-tracker.component';
 import { SleepTrackerComponent } from 'src/app/features/dashboard/widgets/sleep-tracker/sleep-tracker.component';
+import { StudentFunZoneComponent } from 'src/app/student-fun-zone/student-fun-zone.component';
 
 export interface WidgetConfig {
   id: string;
@@ -11,7 +12,7 @@ export interface WidgetConfig {
   enabled: boolean;
   order: number;
   size: 'small' | 'medium' | 'large';
-  category: 'productivity' | 'health' | 'finance' | 'learning';
+  category: 'productivity' | 'health' | 'finance' | 'learning' | 'entertainment';
   route?: string;
 }
 
@@ -90,7 +91,18 @@ export class WidgetService {
       order: 6,
       size: 'large',
       category: 'finance'
-    }
+    },
+	{
+  id: 'student-funzone',
+  title: 'Student Fun Zone',
+  description: 'Igre i alati za zabavu i produktivnost',
+  icon: 'sports_esports',
+  component: StudentFunZoneComponent,
+  enabled: true,
+  order: 3,
+  size: 'large',
+  category: 'entertainment'
+}
   ];
 
   // Signal za widget-e

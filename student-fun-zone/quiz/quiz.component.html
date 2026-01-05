@@ -1,0 +1,28 @@
+<h1>K V I Z</h1>
+<p>Dobrošli u studentski kviz! Testirajte svoje znanje o HTML-u i osnovama weba.</p>
+
+<form>
+  <div *ngFor="let q of quizData">
+    <h3>{{ q.id }}. {{ q.question }}</h3>
+    <label *ngFor="let option of q.options">
+      <input 
+        [type]="q.type" 
+        [name]="'q' + q.id" 
+        [value]="option.value" 
+        (change)="onAnswerChange(q.id, option.value, q.type)">
+      {{ option.text }}
+    </label>
+    <br>
+  </div>
+
+  <button type="button" (click)="checkAnswers()" id="check-btn">Provjerite odgovore</button>
+  <button type="button" (click)="resetQuiz()" id="reset-btn">Pokušaj ponovno</button>
+</form>
+
+<p id="result" *ngIf="score !== null">
+  Osvojili ste **{{ score }}** od **{{ totalQuestions }}** poena!
+</p>
+
+<footer>
+  <p>Created by Danijel Mizdarić | Web programiranje</p>
+</footer>
