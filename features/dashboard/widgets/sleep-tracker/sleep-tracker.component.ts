@@ -169,13 +169,11 @@ export class SleepTrackerComponent {
     
     const userId = this.firebaseService.currentUser()?.uid;
     const today = new Date();
-    
-    // Pronađi postojeći zapis za danas
+
     const existingRecord = this.sleepRecords().find(r => 
       r.date.toDateString() === today.toDateString()
     );
 
-    // Kreiraj novi zapis
     const newRecord: SleepRecord = {
       id: existingRecord?.id || Date.now().toString(),
       date: today,
@@ -184,8 +182,7 @@ export class SleepTrackerComponent {
       notes: this.todayNotes().trim() || null,
       userId: userId || 'demo-user'
     };
-    
-    // Dodaj/update lokalno
+
     if (existingRecord) {
       this.sleepRecords.update(records => 
         records.map(r => r.id === existingRecord.id ? newRecord : r)
@@ -196,10 +193,8 @@ export class SleepTrackerComponent {
       console.log('✅ Sleep record added locally');
     }
     
-    // Reset form
     this.todayNotes.set('');
     
-    // Firebase sync SAMO ako je korisnik prijavljen
     if (userId) {
       try {
         if (existingRecord && existingRecord.id) {

@@ -67,30 +67,58 @@ export class FirebaseService {
  
 
  
-  async register(email: string, password: string, themeId: string = 'green') {
-    this.isLoading.set(true);
-    try {
-      const userCredential = await createUserWithEmailAndPassword(
-        this.auth, 
-        email, 
-        password
-      );
-      
-     
-      await this.saveUserTheme(themeId);
-      
-      console.log('✅ Korisnik registrovan:', userCredential.user.email);
-      return { success: true, user: userCredential.user };
-    } catch (error: any) {
-      console.error('❌ Greška pri registraciji:', error.message);
-      return { 
-        success: false, 
-        error: this.getFriendlyError(error.code) 
-      };
-    } finally {
-      this.isLoading.set(false);
-    }
+async register(email: string, password: string, themeId: string = 'green') {
+  console.log('🔥 Firebase register START for:', email);
+  
+  this.isLoading.set(true);
+  
+  try {
+    console.log('📤 Creating user in Firebase...');
+    
+    const userCredential = await createUserWithEmailAndPassword(
+      this.auth, 
+      email, 
+      password
+    );
+    
+    console.log('✅ Firebase user created:', userCredential.user.email);
+    
+    
+    await this.saveUserTheme(themeId);
+    
+    console.log('🎨 Theme saved to database');
+    
+    return { 
+      success: true, 
+      user: userCredential.user,
+      message: 'Registracija uspješna!' 
+    };
+    
+  } catch (error: any) {
+    console.error('❌ Firebase register ERROR:', error.code, error.message);
+    
+    const friendlyError = this.getFriendlyError(error.code);
+    console.log('📝 Returning error:', friendlyError);
+    
+    return { 
+      success: false, 
+      error: friendlyError 
+    };
+    
+  } finally {
+  
+    console.log('🔄 Firebase register FINALLY - isLoading = false');
+    this.isLoading.set(false);
+    
+  
+    setTimeout(() => {
+      if (this.isLoading()) {
+        console.error('🚨 CRITICAL: isLoading still true! Forcing false.');
+        this.isLoading.set(false);
+      }
+    }, 100);
   }
+}
 
   
   async login(email: string, password: string) {

@@ -25,7 +25,6 @@
   }
 }
 
-// Stats Overview
 .stats-overview {
   display: flex;
   justify-content: space-around;
@@ -63,7 +62,6 @@
   }
 }
 
-// Goal Progress
 .goal-section {
   margin: 20px 0;
 
@@ -86,7 +84,6 @@
   }
 }
 
-// Recommendation
 .recommendation {
   display: flex;
   align-items: center;
@@ -105,7 +102,6 @@
   }
 }
 
-// Today's Entry Form
 .today-entry {
   margin-top: 20px;
 
@@ -171,15 +167,23 @@
           cursor: pointer;
           transition: all 0.2s;
           font-size: 1.5rem;
+          display: flex;
+          align-items: center;
+          justify-content: center;
 
+          color: #757575;
+          
           &:hover {
             border-color: var(--primary-color);
             transform: scale(1.05);
+            color: var(--primary-color);
           }
 
           &.active {
             border-color: var(--primary-color);
             background: rgba(var(--primary-color-rgb), 0.1);
+            color: #ff9800;
+            text-shadow: 0 0 8px rgba(255, 152, 0, 0.3);
           }
         }
       }
@@ -198,7 +202,32 @@
   }
 }
 
-// Weekly Chart
+:host-context(.dark-theme) {
+  .quality-selector {
+    .quality-btn {
+      color: #aaa; // Svijetlo siva za tamnu temu
+      
+      &.active {
+        color: #FFD700 !important; // Zlatna boja za tamnu temu
+        text-shadow: 0 0 10px rgba(255, 215, 0, 0.5) !important;
+      }
+    }
+  }
+}
+
+:host-context(.light-theme) {
+  .quality-selector {
+    .quality-btn {
+      color: #bbb; 
+      
+      &.active {
+        color: #FF9800 !important;
+        text-shadow: 0 0 8px rgba(255, 152, 0, 0.3) !important;
+      }
+    }
+  }
+}
+
 .weekly-chart {
   margin-top: 20px;
 
@@ -257,7 +286,6 @@
   }
 }
 
-// Recent Records
 .recent-records {
   margin-top: 20px;
   max-height: 200px;
@@ -302,7 +330,14 @@
 
     .record-quality {
       font-size: 1rem;
-      color: #ffc107;
+      // Ovde možemo koristiti boje koje zavise od kvaliteta
+      color: #ff9800;
+      
+      &[data-quality="1"] { color: #f44336; }
+      &[data-quality="2"] { color: #ff9800; }
+      &[data-quality="3"] { color: #ffc107; } 
+      &[data-quality="4"] { color: #4caf50; } 
+      &[data-quality="5"] { color: #2196f3; } 
     }
 
     .delete-btn {
@@ -317,7 +352,6 @@
   }
 }
 
-// Scrollbar
 .recent-records::-webkit-scrollbar {
   width: 6px;
 }
@@ -332,7 +366,6 @@
   border-radius: 3px;
 }
 
-// Responsive
 @media (max-width: 768px) {
   .stats-overview {
     flex-direction: column;
@@ -352,6 +385,26 @@
   .quality-selector {
     .quality-btn {
       font-size: 1.2rem !important;
+      padding: 8px !important;
     }
+  }
+}
+
+.loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  margin: 20px 0;
+
+  mat-progress-spinner {
+    margin-bottom: 10px;
+  }
+
+  p {
+    color: var(--text-color);
+    opacity: 0.7;
+    font-size: 0.9rem;
   }
 }

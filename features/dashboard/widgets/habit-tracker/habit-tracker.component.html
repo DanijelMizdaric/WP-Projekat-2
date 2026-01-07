@@ -8,7 +8,6 @@
   </mat-card-header>
   
   <mat-card-content>
-    <!-- Progress Stats -->
     <div class="stats-row">
       <div class="stat">
         <span class="stat-value">{{ completionPercentage }}%</span>
@@ -23,15 +22,13 @@
         <span class="stat-label">Navika</span>
       </div>
     </div>
-    
-    <!-- Progress Bar -->
+
     <mat-progress-bar 
       mode="determinate" 
       [value]="completionPercentage"
       color="primary">
     </mat-progress-bar>
-    
-    <!-- Add New Habit -->
+
     <div class="add-habit-form">
       <mat-form-field appearance="outline" class="full-width">
         <mat-label>Nova navika</mat-label>
@@ -46,8 +43,7 @@
         Dodaj
       </button>
     </div>
-    
-    <!-- Habits List -->
+
     <div class="habits-list">
       <div *ngFor="let habit of habits()" class="habit-item">
        
@@ -73,8 +69,7 @@
           </button>
         </div>
       </div>
-      
-      <!-- Empty State -->
+
       <div *ngIf="habits().length === 0" class="empty-state">
         <mat-icon>checklist</mat-icon>
         <p>Nemaš dodanih navika. Dodaj prvu!</p>

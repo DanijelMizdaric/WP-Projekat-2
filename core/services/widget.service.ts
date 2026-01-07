@@ -1,4 +1,4 @@
-import { Injectable, signal, computed } from '@angular/core';
+import { Injectable, signal, computed, effect } from '@angular/core';
 import { HabitTrackerComponent } from 'src/app/features/dashboard/widgets/habit-tracker/habit-tracker.component';
 import { SleepTrackerComponent } from 'src/app/features/dashboard/widgets/sleep-tracker/sleep-tracker.component';
 import { StudentFunZoneComponent } from 'src/app/student-fun-zone/student-fun-zone.component';
@@ -22,8 +22,8 @@ export interface WidgetConfig {
 export class WidgetService {
   private readonly STORAGE_KEY = 'ipi_dashboard_widgets';
   
-  // Svi dostupni widget-i
-  private allWidgets: WidgetConfig[] = [
+  // Default widgeti - samo 3
+  private defaultWidgets: WidgetConfig[] = [
     {
       id: 'habit-tracker',
       title: 'Habit Tracker',
@@ -49,149 +49,130 @@ export class WidgetService {
       route: '/dashboard/sleep'
     },
     {
-      id: 'study-planner',
-      title: 'Study Planner',
-      description: 'Planiraj sate učenja i prati napredak',
-      icon: 'school',
-      component: null,
-      enabled: false,
+      id: 'student-funzone',
+      title: 'Student Fun Zone',
+      description: 'Igre i alati za zabavu i produktivnost',
+      icon: 'sports_esports',
+      component: StudentFunZoneComponent,
+      enabled: true,
       order: 3,
-      size: 'small',
-      category: 'learning'
-    },
-    {
-      id: 'water-tracker',
-      title: 'Water Intake',
-      description: 'Prati unos vode tokom dana',
-      icon: 'local_drink',
-      component: null,
-      enabled: false,
-      order: 4,
-      size: 'small',
-      category: 'health'
-    },
-    {
-      id: 'mood-tracker',
-      title: 'Mood Tracker',
-      description: 'Bilježi svoje raspoloženje tokom dana',
-      icon: 'mood',
-      component: null,
-      enabled: false,
-      order: 5,
-      size: 'small',
-      category: 'health'
-    },
-    {
-      id: 'finance-tracker',
-      title: 'Finance Tracker',
-      description: 'Prati troškove i budžet',
-      icon: 'account_balance_wallet',
-      component: null,
-      enabled: false,
-      order: 6,
       size: 'large',
-      category: 'finance'
-    },
-	{
-  id: 'student-funzone',
-  title: 'Student Fun Zone',
-  description: 'Igre i alati za zabavu i produktivnost',
-  icon: 'sports_esports',
-  component: StudentFunZoneComponent,
-  enabled: true,
-  order: 3,
-  size: 'large',
-  category: 'entertainment'
-}
+      category: 'entertainment'
+    }
   ];
 
-  // Signal za widget-e
+  // Signal koji drži stanje svih widgeta
   private widgetsSignal = signal<WidgetConfig[]>([]);
   
-  // Computed vrijednosti
-  activeWidgets = computed(() => 
-    this.widgetsSignal().filter(w => w.enabled).sort((a, b) => a.order - b.order)
-  );
+  // Computed vrijednosti - automatski se ažuriraju kada se signal promijeni
+  activeWidgets = computed(() => {
+    const widgets = this.widgetsSignal();
+    return widgets
+      .filter(w => w.enabled)
+      .sort((a, b) => a.order - b.order);
+  });
   
-  availableWidgets = computed(() => 
-    this.widgetsSignal().filter(w => !w.enabled).sort((a, b) => a.order - b.order)
-  );
+  availableWidgets = computed(() => {
+    const widgets = this.widgetsSignal();
+    return widgets
+      .filter(w => !w.enabled)
+      .sort((a, b) => a.order - b.order);
+  });
 
   constructor() {
+
     this.loadWidgets();
+    
+
+    effect(() => {
+      this.saveWidgets();
+    });
   }
+
 
   private loadWidgets(): void {
     try {
       const saved = localStorage.getItem(this.STORAGE_KEY);
       
       if (saved) {
-        // Učitaj sačuvane postavke
-        const savedConfigs: Partial<WidgetConfig>[] = JSON.parse(saved);
+        const savedConfigs: any[] = JSON.parse(saved);
         
-        // Mapiraj sačuvane postavke na default widget-e
-        const mergedWidgets = this.allWidgets.map(widget => {
-          const savedWidget = savedConfigs.find(sw => sw.id === widget.id);
+
+        const loadedWidgets = this.defaultWidgets.map(defaultWidget => {
+          const savedWidget = savedConfigs.find(s => s.id === defaultWidget.id);
+          
           if (savedWidget) {
             return {
-              ...widget,
-              enabled: savedWidget.enabled ?? widget.enabled,
-              order: savedWidget.order ?? widget.order,
-              size: savedWidget.size ?? widget.size
+              ...defaultWidget,
+              enabled: savedWidget.enabled !== undefined ? savedWidget.enabled : defaultWidget.enabled,
+              order: savedWidget.order || defaultWidget.order,
+              size: savedWidget.size || defaultWidget.size
             };
           }
-          return widget;
+          
+          return defaultWidget;
         });
         
-        this.widgetsSignal.set(mergedWidgets);
+        this.widgetsSignal.set(loadedWidgets);
       } else {
-        // Prvi put - koristi default
-        this.widgetsSignal.set([...this.allWidgets]);
-        this.saveWidgets();
+      
+        this.widgetsSignal.set([...this.defaultWidgets]);
       }
     } catch (error) {
-      console.error('Greška pri učitavanju widget-a:', error);
-      this.widgetsSignal.set([...this.allWidgets]);
+      console.error('Error loading widgets:', error);
+      this.widgetsSignal.set([...this.defaultWidgets]);
     }
   }
 
+
   private saveWidgets(): void {
     try {
-      // Sačuvaj samo konfiguraciju, ne komponente
-      const configsToSave = this.widgetsSignal().map(w => ({
+      const widgets = this.widgetsSignal();
+      const configsToSave = widgets.map(w => ({
         id: w.id,
         enabled: w.enabled,
         order: w.order,
         size: w.size
       }));
+      
       localStorage.setItem(this.STORAGE_KEY, JSON.stringify(configsToSave));
     } catch (error) {
-      console.error('Greška pri čuvanju widget-a:', error);
+      console.error('Error saving widgets:', error);
     }
   }
 
-  // Public metode
+
   toggleWidget(widgetId: string): void {
-    this.widgetsSignal.update(widgets =>
-      widgets.map(widget =>
-        widget.id === widgetId 
-          ? { ...widget, enabled: !widget.enabled }
-          : widget
-      )
-    );
-    this.saveWidgets();
+    this.widgetsSignal.update(widgets => {
+      return widgets.map(widget => {
+        if (widget.id === widgetId) {
+          return { ...widget, enabled: !widget.enabled };
+        }
+        return widget;
+      });
+    });
+  }
+
+  setWidgetEnabled(widgetId: string, enabled: boolean): void {
+    this.widgetsSignal.update(widgets => {
+      return widgets.map(widget => {
+        if (widget.id === widgetId) {
+          return { ...widget, enabled };
+        }
+        return widget;
+      });
+    });
   }
 
   updateWidgetOrder(widgetId: string, newOrder: number): void {
     this.widgetsSignal.update(widgets => {
-      const updated = widgets.map(widget =>
-        widget.id === widgetId 
-          ? { ...widget, order: newOrder }
-          : widget
-      );
-      return updated.sort((a, b) => a.order - b.order);
+      return widgets.map(widget => {
+        if (widget.id === widgetId) {
+          return { ...widget, order: newOrder };
+        }
+        return widget;
+      }).sort((a, b) => a.order - b.order);
     });
-    this.saveWidgets();
   }
 
   getWidgetById(id: string): WidgetConfig | undefined {
@@ -199,7 +180,6 @@ export class WidgetService {
   }
 
   resetToDefault(): void {
-    this.widgetsSignal.set([...this.allWidgets]);
-    this.saveWidgets();
+    this.widgetsSignal.set([...this.defaultWidgets]);
   }
 }

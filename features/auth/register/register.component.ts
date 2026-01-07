@@ -68,31 +68,89 @@ export class RegisterComponent {
   }
   
   async onSubmit() {
-  if (this.registerForm.invalid) return;
-  
-  this.isLoading.set(true);
-  this.errorMessage.set('');
-  
-  const { email, password, theme } = this.registerForm.value;
-  
-  const result = await this.firebaseService.register(email, password, theme);
-  
-  this.isLoading.set(false);
-  
-  if (result.success) {
+    console.log('=== REGISTER START ===');
     
-    this.themeService.setTheme(theme);
+    if (this.registerForm.invalid) {
+      console.log('❌ Form invalid');
+      return;
+    }
+
+    this.errorMessage.set('');
+    this.isLoading.set(false); 
+
+    this.isLoading.set(true);
+    console.log('📝 Loading started');
+  
+    const { email, password, theme } = this.registerForm.value;
     
-   
-    this.router.navigate(['/home']); 
-  } else {
-    const errorMsg = result.error || 'Došlo je do nepoznate greške pri registraciji';
-    this.errorMessage.set(errorMsg);
-    this.registerForm.get('password')?.reset();
-    this.registerForm.get('confirmPassword')?.reset();
+    console.log('📤 Registering:', email);
+    
+    try {
+
+      this.firebaseService.register(email, password, theme)
+        .then(result => {
+          console.log('📊 Firebase result received:', result);
+ 
+          this.isLoading.set(false);
+          console.log('🔄 Loading stopped after firebase');
+          
+          if (result.success) {
+            console.log('✅ Registration successful!');
+       
+            this.themeService.setTheme(theme);
+            
+            this.registerForm.reset({ theme: 'green' });
+       
+            setTimeout(() => {
+          
+              console.log('📍 Navigating to login...');
+              this.router.navigate(['/login']);
+            }, 100);
+            
+          } else {
+            console.error('❌ Registration failed:', result.error);
+            this.errorMessage.set(result.error || 'Greška');
+            this.registerForm.get('password')?.reset();
+            this.registerForm.get('confirmPassword')?.reset();
+          }
+        })
+        .catch(error => {
+          console.error('💥 Firebase promise error:', error);
+          this.isLoading.set(false);
+          this.errorMessage.set('Greška u komunikaciji sa serverom');
+        });
+        
+    } catch (error) {
+      console.error('💥 Try-catch error:', error);
+      this.isLoading.set(false);
+      this.errorMessage.set('Neočekivana greška');
+    }
+    
+    setTimeout(() => {
+      if (this.isLoading()) {
+        console.warn('⚠️ EMERGENCY: Loading stuck for 5s, forcing stop');
+        this.isLoading.set(false);
+        this.router.navigate(['/login']);
+      }
+    }, 5000);
   }
-}
   
+  goToLogin() {
+    console.log('🚀 Manual navigate to login');
+    this.isLoading.set(false);
+    this.router.navigate(['/login']);
+  }
+  
+  testRegistration() {
+    console.log('🧪 Test registration (no Firebase)');
+    this.isLoading.set(true);
+    
+    setTimeout(() => {
+      this.isLoading.set(false);
+      alert('Test registracije uspješan!');
+      this.router.navigate(['/login']);
+    }, 1500);
+  }
   
   get email() { return this.registerForm.get('email'); }
   get password() { return this.registerForm.get('password'); }

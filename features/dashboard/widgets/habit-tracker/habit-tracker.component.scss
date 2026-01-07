@@ -107,7 +107,6 @@ mat-progress-bar {
       margin-bottom: 0;
     }
     
-    // Leva strana: checkbox + tekst
     .habit-main {
       display: flex;
       align-items: center;
@@ -140,11 +139,10 @@ mat-progress-bar {
       }
     }
     
-    // Desna strana: streak + delete
     .habit-actions {
       display: flex;
       align-items: center;
-      gap: 20px; // 👈 OVO JE KLJUČNO - razmak između streak i delete
+      gap: 20px; 
       
       .habit-streak {
         font-size: 0.8rem;

@@ -65,12 +65,10 @@ export class HabitTrackerComponent {
   
   async loadHabits() {
     this.isLoading.set(true);
-    
-    // Provjeri da li je korisnik prijavljen
+
     const userId = this.firebaseService.currentUser()?.uid;
     
     if (userId) {
-      // Pokušaj učitati iz Firebase
       try {
         const docs = await this.firebaseService.getCollectionByUID('habits', userId);
         const habits = docs.map((doc: any) => ({
@@ -88,7 +86,6 @@ export class HabitTrackerComponent {
         this.loadDemoHabits();
       }
     } else {
-      // Demo mod
       console.log('🎮 Demo mod - koristim demo podatke');
       this.loadDemoHabits();
     }
@@ -118,12 +115,10 @@ export class HabitTrackerComponent {
       createdAt: new Date(),
       streak: 0
     };
-    
-    // Dodaj lokalno
+
     this.habits.update(habits => [...habits, newHabit]);
     this.newHabitTitle.set('');
-    
-    // Pokušaj sačuvati u Firebase ako je korisnik prijavljen
+
     const userId = this.firebaseService.currentUser()?.uid;
     if (userId) {
       try {
@@ -138,7 +133,6 @@ export class HabitTrackerComponent {
     }
   }
   
-  // SAMO JEDNA toggleHabit metoda!
   toggleHabit(habit: Habit) {
     console.log('🔄 Toggle navika:', habit.title);
     
@@ -149,11 +143,10 @@ export class HabitTrackerComponent {
           : h
       )
     );
-    
-    // Firebase sync samo ako je korisnik prijavljen
+
     const userId = this.firebaseService.currentUser()?.uid;
     if (userId && habit.id) {
-      // Async bez čekanja
+    
       this.firebaseService.updateDocument('habits', habit.id, {
         completed: !habit.completed,
         streak: !habit.completed ? habit.streak + 1 : habit.streak
@@ -166,12 +159,8 @@ export class HabitTrackerComponent {
     
     this.habits.update(habits => habits.filter(h => h.id !== habitId));
     
-    // Ako FirebaseService nema deleteDocument, koristimo ovu logiku:
     const userId = this.firebaseService.currentUser()?.uid;
     if (userId) {
-      // Ako imaš deleteDocument metodu, koristi je:
-      // this.firebaseService.deleteDocument('habits', habitId)
-      //   .catch((err: any) => console.warn('Firebase delete failed:', err));
       
       console.log('Firebase delete bi ovde bio pozvan');
     }
@@ -184,10 +173,9 @@ export class HabitTrackerComponent {
       habits.map(habit => ({ ...habit, completed: false }))
     );
     
-    // Update u Firebase ako je korisnik prijavljen
     const userId = this.firebaseService.currentUser()?.uid;
     if (userId) {
-      // Ovde bi trebalo update-ovati sve navike
+     
       console.log('Firebase reset bi ovde bio implementiran');
     }
   }

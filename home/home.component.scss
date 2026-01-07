@@ -1,4 +1,3 @@
-/* STILOVI ZA ARTICLE (koji odgovaraju originalnom 'article') */
 .page-content-card {
     width: 90%;
     max-width: 1200px;
@@ -25,11 +24,9 @@
 }
 
 .page-content {
-    /* U originalnom kodu nema dodatnih stilova za article wrapper, 
-       ali je možda potrebno za flex */
+   
 }
 
-/* STILOVI ZA SLIKU UNUTAR ARTICLE */
 .page-content img {
     float: right;
     margin: 0 0 20px 30px;
@@ -39,7 +36,6 @@
     shape-outside: margin-box;
 }
 
-/* STILOVI ZA PARAGRAFE */
 .page-content p:first-of-type::first-letter {
     font-size: 3em;
     float: left;
@@ -49,7 +45,6 @@
     font-weight: bold;
 }
 
-/* MEDIA QUERIES ZA HOME KOMPONENTU */
 @media (max-width: 768px) {
     .page-content-card {
         width: 95%;

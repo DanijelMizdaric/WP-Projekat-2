@@ -88,20 +88,36 @@ export class ThemeService {
   }
 
   private applyTheme(theme: Theme): void {
-    const root = document.documentElement;
-    
-    root.style.setProperty('--primary-color', theme.primaryColor);
-    root.style.setProperty('--secondary-color', theme.secondaryColor);
-    root.style.setProperty('--background-color', theme.backgroundColor);
-    root.style.setProperty('--text-color', theme.textColor);
-    
-   
-    if (theme.isDark) {
-      document.body.classList.add('dark-theme');
-    } else {
-      document.body.classList.remove('dark-theme');
-    }
+  const root = document.documentElement;
+  
+  root.style.setProperty('--primary-color', theme.primaryColor);
+  root.style.setProperty('--secondary-color', theme.secondaryColor);
+  root.style.setProperty('--background-color', theme.backgroundColor);
+  root.style.setProperty('--text-color', theme.textColor);
+  
+  root.style.setProperty('--card-bg', theme.isDark ? '#1e1e1e' : '#ffffff');
+  root.style.setProperty('--border-color', theme.isDark ? '#333' : '#e0e0e0');
+
+  const rgb = this.hexToRgb(theme.primaryColor);
+  if (rgb) {
+    root.style.setProperty('--primary-color-rgb', `${rgb.r}, ${rgb.g}, ${rgb.b}`);
   }
+  
+  if (theme.isDark) {
+    document.body.classList.add('dark-theme');
+  } else {
+    document.body.classList.remove('dark-theme');
+  }
+}
+
+private hexToRgb(hex: string): { r: number, g: number, b: number } | null {
+  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return result ? {
+    r: parseInt(result[1], 16),
+    g: parseInt(result[2], 16),
+    b: parseInt(result[3], 16)
+  } : null;
+}
 
   private loadTheme(): void {
     const savedTheme = localStorage.getItem(this.THEME_KEY);

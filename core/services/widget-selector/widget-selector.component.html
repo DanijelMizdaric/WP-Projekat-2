@@ -12,7 +12,6 @@
     </button>
   </div>
   
-  <!-- Aktivni widget-i -->
   <div class="section" *ngIf="activeWidgets().length > 0">
     <h3 class="section-title">
       <mat-icon>check_circle</mat-icon>
@@ -47,7 +46,6 @@
     </div>
   </div>
   
-  <!-- Dostupni widget-i -->
   <div class="section" *ngIf="availableWidgets().length > 0">
     <h3 class="section-title">
       <mat-icon>add_circle</mat-icon>
@@ -82,14 +80,12 @@
     </div>
   </div>
   
-  <!-- Prazno stanje -->
   <div *ngIf="activeWidgets().length === 0 && availableWidgets().length === 0" class="empty-state">
     <mat-icon>error_outline</mat-icon>
     <h3>Nema dostupnih widget-a</h3>
     <p>Pokušajte osvježiti stranicu ili kontaktirajte podršku</p>
   </div>
   
-  <!-- Footer -->
   <div class="footer">
     <button mat-button color="warn" (click)="widgetService.resetToDefault()" class="reset-btn">
       <mat-icon>restore</mat-icon>

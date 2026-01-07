@@ -1,21 +1,17 @@
 <div class="dashboard-container">
-  <!-- Navbar -->
+
   <mat-toolbar color="primary" class="dashboard-toolbar">
     <div class="toolbar-left">
-      <button mat-icon-button (click)="toggleSidenav()" matTooltip="Meni">
-        <mat-icon>menu</mat-icon>
-      </button>
       <span class="logo">📊 IPI Dashboard</span>
     </div>
     
     <div class="toolbar-right">
-      <!-- Widget Selector Button -->
+     
       <button mat-button (click)="openWidgetSelector()" class="widget-selector-btn" matTooltip="Personalizuj dashboard">
         <mat-icon>dashboard_customize</mat-icon>
         <span class="btn-text">Widget-i</span>
       </button>
-      
-      <!-- Theme Selector -->
+
       <button mat-button [matMenuTriggerFor]="themeMenu" matTooltip="Promijeni temu">
         <mat-icon>palette</mat-icon>
         <span class="btn-text">{{ currentTheme().name }}</span>
@@ -27,18 +23,13 @@
           {{ theme.name }}
         </button>
       </mat-menu>
-      
-      <!-- User Menu -->
+
       <div *ngIf="user; else loginButton">
         <button mat-button [matMenuTriggerFor]="userMenu" matTooltip="Korisnički meni">
           <mat-icon>person</mat-icon>
           <span class="btn-text">{{ getShortUsername() }}</span>  
         </button>
         <mat-menu #userMenu="matMenu">
-          <button mat-menu-item>
-            <mat-icon>settings</mat-icon>
-            Podešavanja
-          </button>
           <button mat-menu-item (click)="logout()">
             <mat-icon>logout</mat-icon>
             Odjavi se
@@ -55,8 +46,7 @@
     </div>
   </mat-toolbar>
 
-  <!-- Main Content -->
-  <main class="dashboard-content">
+  <main class="dashboard-content" style="overflow-y: auto; height: calc(100vh - 64px);">
     <div class="welcome-section">
       <h1>👋 Dobrodošao, {{ getUsername() }}!</h1>
       <p>Ovo je tvoj Personal Life Dashboard. Upravljaj widget-ima koje želiš vidjeti.</p>
@@ -75,27 +65,43 @@
         </div>
       </div>
     </div>
-    
-    <!-- Dynamic Widget Grid -->
+
+    <div class="drag-hint" *ngIf="getDisplayWidgets().length > 1">
+      <mat-icon>touch_app</mat-icon>
+      <span>Povucite widgete za ikonu u gornjem desnom uglu da ih preuredite</span>
+    </div>
+
     <div class="widget-grid-container">
-      <div class="widget-grid">
-        <!-- Habit Tracker Widget -->
-        <div *ngFor="let widget of activeWidgets()" 
+
+      <div class="widget-grid" 
+           cdkDropList
+           (cdkDropListDropped)="onWidgetDrop($event)"
+           [cdkDropListData]="getDisplayWidgets()">
+        
+        <div *ngFor="let widget of getDisplayWidgets()" 
              class="widget-item"
              [class]="getWidgetSizeClass(widget.size)"
-             (click)="navigateToWidgetDetails(widget.id)">
-          
-          <!-- Render actual widget components -->
+             cdkDrag
+             [id]="'widget-' + widget.id"
+             (click)="navigateToWidgetDetails(widget.id, $event)">
+
+          <div class="drag-handle" cdkDragHandle>
+            <mat-icon>drag_indicator</mat-icon>
+          </div>
+
           <div *ngIf="widget.id === 'habit-tracker'">
             <app-habit-tracker></app-habit-tracker>
           </div>
-          
+
           <div *ngIf="widget.id === 'sleep-tracker'">
             <app-sleep-tracker></app-sleep-tracker>
           </div>
-          
-          <!-- Placeholder for other widgets -->
-          <div *ngIf="!['habit-tracker', 'sleep-tracker'].includes(widget.id)" 
+
+          <div *ngIf="widget.id === 'student-funzone'">
+            <app-student-fun-zone></app-student-fun-zone>
+          </div>
+
+          <div *ngIf="!['habit-tracker', 'sleep-tracker', 'student-funzone'].includes(widget.id)" 
                class="widget-placeholder">
             <mat-card class="placeholder-card">
               <mat-card-header>
@@ -122,8 +128,7 @@
           </div>
         </div>
       </div>
-      
-      <!-- Empty Dashboard State -->
+
       <div *ngIf="!hasActiveWidgets" class="empty-dashboard">
         <div class="empty-content">
           <mat-icon class="empty-icon">dashboard</mat-icon>
