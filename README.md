@@ -1,59 +1,11 @@
-# WebProjekat
+Ovaj projekat je web aplikacija napravljena za studente koja omogućava praćenje ličnih navika, spavanja i produktivnu zabavu. Ovo je personalizovani dashboard gdje svaki korisnik može organizovati svoj dan na jednostavan i vizuelno privlačan način.
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.19.
+Aplikacija se sastoji od glavne stranice, gdje korisnik moze da vidi kurseve, rasporede, i kontakt formu, kao i login formu. Nakon login forme ima Dashboard na kojem se nalaze widgeti kao Sleep tracker, Habit tracker i student fun zone.
 
-## Development server
+Student Fun Zone uključuje Bingo Challenge za druženje, Quiz Master za brzo testiranje znanja, Kanban Board za organizaciju zadataka, Vision Board za postavljanje ciljeva i Whiteboard za digitalno crtanje i bilješke.
 
-To start a local development server, run:
+Aplikacija ima potpuni sistem za registraciju i prijavu korisnika putem Firebase autentifikacije. Nakon prijave, korisnici mogu personalizovati svoj dashboard prema vlastitim potrebama. Dostupno je pet različitih tema boja koje se mogu mijenjati po želji, a sve postavke se automatski pamte.
 
-```bash
-ng serve
-```
+Projekt je razvijen koristeći Angular 17 framework sa TypeScript-om za frontend dio. Angular je odabran zbog svoje robusne strukture i mogućnosti brzog razvoja. Za backend se koristi Firebase platforma koja pruža gotova rješenja za autentifikaciju, bazu podataka i hosting. Angular Material biblioteka se koristi za UI komponente, dok Angular CDK omogućava drag and drop funkcionalnost za preuređivanje widgeta. Stilizacija je urađena sa SCSS.
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Za pokretanje aplikacije lokalno, potrebno je prvo instalirati Node.js i Angular CLI. Nakon kloniranja repozitorijuma, pokrenuti npm install da se instaliraju sve zavisnosti. Aplikacija se pokreće komandom ng serve, a zatim se otvara u browseru na adresi http://localhost:4200. Za produkcijski deploy koristi se Firebase hosting.
