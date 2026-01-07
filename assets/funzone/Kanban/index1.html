@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kanban Ploca</title>
+    <link rel="stylesheet" href="style1.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+<body>
+
+    <h1>Kanban ploca</h1>
+    
+    <div class="buttons">
+        <button id="addTaskBtn">Dodaj zadatak</button>
+        <button id="saveBoardBtn">Snimi</button>
+        <button id="savePdfBtn">Preuzmi PDF</button>
+        <button id="sendEmailBtn">Pošalji mailom</button>
+        <button id="clearBoardBtn">Ocisti plocu</button>
+    </div>
+    
+    <div id="taskModal" class="modal">
+        <div class="modal-content">
+            <h3>Dodaj zadatak</h3>
+            <input type="text" id="taskInput" placeholder="Vas zadatak..." />
+            <div class="modal-buttons">
+                <button id="modalAdd">Dodaj</button>
+                <button id="modalCancel">Ponisti</button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="clearModal" class="modal">
+        <div class="modal-content">
+            <h3>Ocisti cijelu plocu?</h3>
+            <p>Ova se radnja ne moze ponistiti!</p>
+            <div class="modal-buttons">
+                <button id="clearYes" style="background:#e74c3c;">Ocisti</button>
+                <button id="clearNo">Ponisti</button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="emailModal" class="modal">
+        <div class="modal-content">
+            <h3>Pošalji Kanban ploču mailom</h3>
+            <input type="email" id="emailInput" placeholder="Unesite email adresu..." />
+            <div class="modal-buttons">
+                <button id="emailSend">Pošalji</button>
+                <button id="emailCancel">Poništi</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="board" id="kanbanContent">
+        <div class="column" data-status="todo">
+            <h2>To Do</h2>
+            <div class="taskList"></div>
+        </div>
+        
+        <div class="column" data-status="progress">
+            <h2>In progress</h2>
+            <div class="taskList"></div>
+        </div>
+        
+        <div class="column" data-status="done">
+            <h2>Done</h2>
+            <div class="taskList"></div>
+        </div>
+    </div>
+
+    <footer>
+        <p>Web programiranje 2025 © Internacionalna poslovno-informaciona akademija Tuzla</p>
+    </footer>
+
+    <script src="javascript1.js"></script>
+    <script>
+    
+    document.getElementById('savePdfBtn').addEventListener('click', async () => {
+        const element = document.getElementById('kanbanContent');
+        
+        
+        const canvas = await html2canvas(element, {
+            scale: 2,
+            useCORS: true,
+            backgroundColor: '#ffffff',
+            logging: true
+        });
+        
+       
+        const container = document.createElement('div');
+        container.style.padding = '20px';
+        container.style.backgroundColor = 'white';
+        container.style.textAlign = 'center';
+        
+  
+        const title = document.createElement('h2');
+        title.textContent = 'Kanban Ploča';
+        title.style.color = '#2c3e50';
+        title.style.marginBottom = '20px';
+        container.appendChild(title);
+        
+  
+        const img = document.createElement('img');
+        img.src = canvas.toDataURL('image/png');
+        img.style.maxWidth = '100%';
+        img.style.border = '2px solid #e1e8ed';
+        img.style.borderRadius = '10px';
+        container.appendChild(img);
+        
+       
+        const footer = document.createElement('p');
+        footer.textContent = 'Kreirano sa Kanban aplikacijom';
+        footer.style.marginTop = '20px';
+        footer.style.color = '#6c757d';
+        footer.style.fontSize = '12px';
+        container.appendChild(footer);
+
+        const options = {
+            margin: 0.5,
+            filename: 'Kanban_Ploča.pdf',
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { 
+                scale: 2,
+                backgroundColor: '#ffffff'
+            },
+            jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+        };
+        
+        html2pdf().set(options).from(container).save();
+    });
+</script>
+</body>
+</html>

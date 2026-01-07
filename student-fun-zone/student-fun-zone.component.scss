@@ -1,0 +1,336 @@
+
+.funzone-container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.funzone-container.fullscreen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 9999;
+  border-radius: 0;
+}
+
+.funzone-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  color: white;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.funzone-icon {
+  font-size: 32px;
+  height: 32px;
+  width: 32px;
+}
+
+.funzone-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.header-controls {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.app-selector {
+  min-width: 200px;
+  background: white;
+  border-radius: 8px;
+}
+
+.app-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.controls {
+  display: flex;
+  gap: 8px;
+}
+
+.apps-grid {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+  padding: 24px;
+  overflow-y: auto;
+}
+
+.app-card {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 12px;
+  padding: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  border: 2px solid transparent;
+}
+
+.app-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  border-color: #667eea;
+  background: white;
+}
+
+.app-card-icon {
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.app-card-icon mat-icon {
+  color: white;
+  font-size: 32px;
+  height: 32px;
+  width: 32px;
+}
+
+.app-card h3 {
+  margin: 8px 0 4px 0;
+  color: #2c3e50;
+  font-size: 1.1rem;
+}
+
+.app-card p {
+  color: #6c757d;
+  font-size: 0.9rem;
+  margin: 0 0 12px 0;
+  flex: 1;
+}
+
+.app-category {
+  background: #e9ecef;
+  color: #495057;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.app-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: white;
+  border-radius: 8px;
+  margin: 16px;
+  overflow: hidden;
+}
+
+.app-info {
+  padding: 16px 24px;
+  background: #f8f9fa;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.app-info h3 {
+  margin: 0 0 4px 0;
+  color: #2c3e50;
+}
+
+.app-info p {
+  margin: 0;
+  color: #6c757d;
+  font-size: 0.9rem;
+}
+
+.iframe-wrapper {
+  flex: 1;
+  position: relative;
+  min-height: 400px;
+}
+
+.app-iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+.quick-actions {
+  padding: 12px 24px;
+  background: #f8f9fa;
+  border-top: 1px solid #dee2e6;
+  display: flex;
+  gap: 12px;
+}
+
+.welcome-screen {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+}
+
+.welcome-content {
+  text-align: center;
+  max-width: 500px;
+  color: white;
+}
+
+.welcome-icon {
+  font-size: 80px;
+  height: 80px;
+  width: 80px;
+  margin-bottom: 24px;
+  opacity: 0.9;
+}
+
+.welcome-content h2 {
+  margin-bottom: 12px;
+  font-size: 2rem;
+}
+
+.welcome-content p {
+  margin-bottom: 32px;
+  font-size: 1.1rem;
+  opacity: 0.9;
+}
+
+.category-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.category-buttons button {
+  padding: 12px 24px;
+}
+
+.explore-btn {
+  padding: 12px 32px;
+  font-size: 1rem;
+}
+
+
+@media (max-width: 768px) {
+  .funzone-header {
+    flex-direction: column;
+    gap: 16px;
+    text-align: center;
+  }
+  
+  .header-controls {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .apps-grid {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    padding: 16px;
+    gap: 16px;
+  }
+  
+  .category-buttons {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+}
+.funzone-error {
+  padding: 20px;
+  
+  button {
+    cursor: pointer;
+    transition: all 0.3s ease;
+    
+    &:hover {
+      opacity: 0.9;
+      transform: translateY(-2px);
+    }
+  }
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  
+  .loading-spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid #f3f3f3;
+    border-top: 5px solid #667eea;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 20px;
+  }
+  
+  p {
+    color: #6c757d;
+    font-size: 16px;
+    margin-top: 10px;
+  }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.app-content {
+  flex: 1;
+  overflow: auto;
+  background: white;
+  
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  button, .btn {
+    cursor: pointer;
+  }
+}
+
+.debug-info {
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+  background: rgba(0,0,0,0.8);
+  color: white;
+  padding: 10px;
+  border-radius: 5px;
+  font-size: 12px;
+  z-index: 9999;
+  max-width: 300px;
+}

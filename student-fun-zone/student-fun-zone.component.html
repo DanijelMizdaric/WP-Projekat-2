@@ -1,0 +1,103 @@
+
+<div class="funzone-container" [class.fullscreen]="isFullscreen()">
+
+  <div class="funzone-header">
+    <div class="header-left">
+      <mat-icon class="funzone-icon">sports_esports</mat-icon>
+      <h2>🎮 Student Fun Zone</h2>
+    </div>
+    
+    <div class="header-controls">
+    
+      <mat-select 
+        [(value)]="currentAppId" 
+        (selectionChange)="loadApp($event.value)"
+        class="app-selector"
+        placeholder="Odaberite aplikaciju">
+        <mat-option *ngFor="let app of apps" [value]="app.id">
+          <div class="app-option">
+            <mat-icon>{{ app.icon }}</mat-icon>
+            <span>{{ app.title }}</span>
+          </div>
+        </mat-option>
+      </mat-select>
+
+      <div class="controls">
+        <button mat-icon-button (click)="refreshApp()" matTooltip="Osvježi">
+          <mat-icon>refresh</mat-icon>
+        </button>
+        
+       
+        
+        <button mat-icon-button (click)="openInNewTab()" matTooltip="Otvori u novom tabu">
+          <mat-icon>open_in_new</mat-icon>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  @if (showAppGrid()) {
+    <div class="apps-grid">
+      @for (app of apps; track app.id) {
+        <div class="app-card" (click)="loadApp(app.id)">
+          <div class="app-card-icon">
+            <mat-icon>{{ app.icon }}</mat-icon>
+          </div>
+          <h3>{{ app.title }}</h3>
+          <p>{{ app.description }}</p>
+          <div class="app-category">{{ getCategoryLabel(app.category) }}</div>
+        </div>
+      }
+    </div>
+  }
+
+  @if (currentAppId() && !showAppGrid()) {
+    <div class="app-container">
+      <div class="app-info">
+        <h3>{{ getCurrentApp()?.title }}</h3>
+        <p>{{ getCurrentApp()?.description }}</p>
+      </div>
+
+      @if (isLoading()) {
+        <div class="loading-container">
+          <div class="loading-spinner"></div>
+          <p>Učitavam {{ getCurrentApp()?.title }}...</p>
+        </div>
+      }
+
+      <div #appContainer class="app-content" [innerHTML]="appContent()"></div>
+
+      <div class="quick-actions">
+        <button mat-stroked-button (click)="showAppGrid.set(true)">
+          <mat-icon>apps</mat-icon> Sve aplikacije
+        </button>
+      </div>
+    </div>
+  }
+
+  @if (!currentAppId() && !showAppGrid()) {
+    <div class="welcome-screen">
+      <div class="welcome-content">
+        <mat-icon class="welcome-icon">celebration</mat-icon>
+        <h2>Dobrodošli u Student Fun Zone!</h2>
+        <p>Odaberite aplikaciju za zabavu, produktivnost ili kreativnost.</p>
+        
+        <div class="category-buttons">
+          <button mat-raised-button (click)="showAppGrid.set(true)">
+            <mat-icon>casino</mat-icon> Igre
+          </button>
+          <button mat-raised-button (click)="showAppGrid.set(true)">
+            <mat-icon>work</mat-icon> Produktivnost
+          </button>
+          <button mat-raised-button (click)="showAppGrid.set(true)">
+            <mat-icon>palette</mat-icon> Kreativnost
+          </button>
+        </div>
+        
+        <button mat-flat-button color="primary" (click)="showAppGrid.set(true)" class="explore-btn">
+          <mat-icon>explore</mat-icon> Istraži sve aplikacije
+        </button>
+      </div>
+    </div>
+  }
+</div>

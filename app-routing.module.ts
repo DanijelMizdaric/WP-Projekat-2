@@ -10,7 +10,6 @@ import { WhiteboardComponent } from './components/funzone/whiteboard/whiteboard.
 import { MainLayoutComponent } from './layout/main-layout/main-layout.component';
 import { DashboardComponent } from './features/dashboard/dashboard.component';
 
-// **DODAJ OVE IMPORTOVE:**
 import { HabitTrackerComponent } from './features/dashboard/widgets/habit-tracker/habit-tracker.component';
 import { SleepTrackerComponent } from './features/dashboard/widgets/sleep-tracker/sleep-tracker.component';
 
@@ -20,17 +19,16 @@ export const routes: Routes = [
   { path: 'login', component: LoginComponent }, 
   { path: 'register', component: RegisterComponent }, 
   
-  // Dashboard SA children rutama za widget-e
   { 
     path: 'dashboard', 
     component: DashboardComponent,
     children: [
-      // **OVO JE VAŽNO:** prazna ruta ostaje dashboard
+
       { path: '', redirectTo: '', pathMatch: 'full' },
-      // **DODAJ WIDGET RUTE:**
+
       { path: 'habits', component: HabitTrackerComponent },
       { path: 'sleep', component: SleepTrackerComponent },
-      // Dodaj i druge widget rute ako imaš
+
     ]
   },
   

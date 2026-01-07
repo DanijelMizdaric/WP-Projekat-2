@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="bs">
+<head>
+    <meta charset="UTF-8">
+    <title>Kviz</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <h1>K V I Z</h1>
+    <p>Dobrodošli u studentski kviz! Testirajte svoje znanje o HTML-u i osnovama weba.</p>
+
+    <form id="quiz-form">
+
+        <!-- 1. pitanje -->
+        <h3>1. Šta predstavlja HTML?</h3>
+        <label><input type="radio" name="q1" value="a"> Programski jezik</label><br>
+        <label><input type="radio" name="q1" value="b"> Jezik za strukturiranje web stranice</label><br>
+        <label><input type="radio" name="q1" value="c"> Baza podataka</label><br>
+
+        <!-- 2. pitanje -->
+        <h3>2. Koji tag se koristi za najveći naslov?</h3>
+        <label><input type="radio" name="q2" value="a"> &lt;h6&gt;</label><br>
+        <label><input type="radio" name="q2" value="b"> &lt;title&gt;</label><br>
+        <label><input type="radio" name="q2" value="c"> &lt;h1&gt;</label><br>
+
+        <!-- 3. pitanje -->
+        <h3>3. Koje od navedenih su HTML elementi? (više tačnih odgovora)</h3>
+        <label><input type="checkbox" name="q3" value="a"> &lt;div&gt;</label><br>
+        <label><input type="checkbox" name="q3" value="b"> &lt;table&gt;</label><br>
+        <label><input type="checkbox" name="q3" value="c"> &lt;python&gt;</label><br>
+
+        <!-- 4. pitanje -->
+        <h3>4. Koja od navedenih ekstenzija pripada HTML dokumentu?</h3>
+        <label><input type="radio" name="q4" value="a"> .txt</label><br>
+        <label><input type="radio" name="q4" value="b"> .html</label><br>
+        <label><input type="radio" name="q4" value="c"> .css</label><br>
+
+        <!-- 5. pitanje -->
+        <h3>5. Koje tehnologije se koriste uz HTML za kreiranje web stranica?</h3>
+        <label><input type="checkbox" name="q5" value="a"> CSS</label><br>
+        <label><input type="checkbox" name="q5" value="b"> JavaScript</label><br>
+        <label><input type="checkbox" name="q5" value="c"> Microsoft Word</label><br>
+
+        <button type="button" id="check-btn">Provjerite odgovore</button>
+        <button type="button" id="reset-btn">Pokušaj ponovno</button>
+    </form>
+
+    <p id="result"></p>
+
+    <footer>
+        <p>Created by Danijel Mizdarić | Web programiranje</p>
+    </footer>
+
+    <script>
+        const answers = {
+            q1: ["b"],
+            q2: ["c"],
+            q3: ["a","b"],
+            q4: ["b"],
+            q5: ["a","b"]
+        };
+
+        document.getElementById("check-btn").addEventListener("click", () => {
+            let score = 0;
+            const total = Object.keys(answers).length;
+
+            for (let i = 1; i <= total; i++) {
+                const inputs = document.querySelectorAll(`input[name="q${i}"]`);
+                const selected = Array.from(inputs).filter(input => input.checked).map(input => input.value);
+
+                if (selected.length === answers[`q${i}`].length &&
+                    selected.every(val => answers[`q${i}`].includes(val))) {
+                    score++;
+                }
+            }
+
+            document.getElementById("result").textContent = `Osvojili ste ${score} od ${total} poena!`;
+        });
+
+        document.getElementById("reset-btn").addEventListener("click", () => {
+            document.getElementById("quiz-form").reset();
+            document.getElementById("result").textContent = "";
+        });
+    </script>
+
+</body>
+</html>

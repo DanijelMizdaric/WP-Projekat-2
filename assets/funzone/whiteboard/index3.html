@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style3.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <title>Interaktivni Whiteboard</title>
+</head>
+<body>
+    <h1>🖊️ Interaktivni Whiteboard</h1>
+
+  
+    <div class="toolbar">
+        <label for="colorPicker">Boja:</label>
+        <input type="color" id="colorPicker" value="#000000">
+
+        <label for="brushSize">Četka:</label>
+        <input type="range" id="brushSize" min="1" max="20" value="3">
+
+        <button id="eraserBtn">Briši</button>
+        <button id="clearBtn">Čista ploča</button>
+        <button id="saveBtn">Snimi</button>
+        <button id="savePdfBtn">Preuzmi PDF</button>
+        <button id="sendEmailBtn">Pošalji mailom</button>
+    </div>
+
+   
+    <canvas id="board" width="900" height="500"></canvas>
+
+    
+    <div id="emailModal" class="modal">
+        <div class="modal-content">
+            <h3>Pošalji Whiteboard crtež mailom</h3>
+            <input type="email" id="emailInput" placeholder="Unesite email adresu..." />
+            <div class="modal-buttons">
+                <button id="emailSend">Pošalji</button>
+                <button id="emailCancel">Poništi</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        Web programiranje 2025 © Internacionalna poslovno-informaciona akademija Tuzla
+    </footer>
+
+    <script src="javascript3.js"></script>
+    <script>
+       
+        document.getElementById('savePdfBtn').addEventListener('click', () => {
+            const canvas = document.getElementById('board');
+            
+            
+            const container = document.createElement('div');
+            container.style.padding = '20px';
+            container.style.backgroundColor = 'white';
+            container.style.textAlign = 'center';
+            
+            
+            const title = document.createElement('h2');
+            title.textContent = 'Interaktivni Whiteboard Crtež';
+            title.style.color = '#2c3e50';
+            title.style.marginBottom = '20px';
+            container.appendChild(title);
+            
+           
+            const img = document.createElement('img');
+            img.src = canvas.toDataURL('image/png');
+            img.style.maxWidth = '100%';
+            img.style.border = '2px solid #e1e8ed';
+            img.style.borderRadius = '10px';
+            container.appendChild(img);
+            
+			
+            const footer = document.createElement('p');
+            footer.textContent = 'Kreirano sa Interaktivni Whiteboard aplikacijom';
+            footer.style.marginTop = '20px';
+            footer.style.color = '#6c757d';
+            footer.style.fontSize = '12px';
+            container.appendChild(footer);
+
+            const options = {
+                margin: 0.5,
+                filename: 'Whiteboard_Crtež.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { 
+                    scale: 2,
+                    backgroundColor: '#ffffff'
+                },
+                jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+            };
+            
+            html2pdf().set(options).from(container).save();
+        });
+
+       
+        document.getElementById('sendEmailBtn').addEventListener('click', () => {
+            document.getElementById('emailModal').style.display = 'block';
+        });
+
+        document.getElementById('emailCancel').addEventListener('click', () => {
+            document.getElementById('emailModal').style.display = 'none';
+            document.getElementById('emailInput').value = '';
+        });
+
+        document.getElementById('emailSend').addEventListener('click', () => {
+            const email = document.getElementById('emailInput').value;
+            if (email) {
+                const canvas = document.getElementById('board');
+                const drawingDataURL = canvas.toDataURL('image/png');
+                
+                
+                const subject = 'Moj Whiteboard Crtež';
+                const body = `Pogledajte moj crtež sa Interaktivnog Whiteboarda!\n\n` +
+                            `Crtež je priložen kao slika ili možete pregledati u prilogu.\n\n` +
+                            `Poslano sa Interaktivni Whiteboard aplikacije.\n\n` +
+                            `Datum: ${new Date().toLocaleDateString()}`;
+
+               
+                const mailtoLink = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+                
+               
+                window.location.href = mailtoLink;
+                
+              
+                document.getElementById('emailModal').style.display = 'none';
+                document.getElementById('emailInput').value = '';
+            } else {
+                alert('Molimo unesite email adresu!');
+            }
+        });
+
+       
+        window.addEventListener('click', (event) => {
+            const emailModal = document.getElementById('emailModal');
+            if (event.target === emailModal) {
+                emailModal.style.display = 'none';
+                document.getElementById('emailInput').value = '';
+            }
+        });
+
+       
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape') {
+                document.getElementById('emailModal').style.display = 'none';
+                document.getElementById('emailInput').value = '';
+            }
+        });
+
+       
+        function sendEmailWithDrawing(email) {
+            const canvas = document.getElementById('board');
+            const link = document.createElement('a');
+            link.download = 'whiteboard_crtež.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+            
+          
+            setTimeout(() => {
+                const subject = 'Moj Whiteboard Crtež';
+                const body = `Pogledajte moj crtež sa Interaktivnog Whiteboarda!\n\n` +
+                            `Crtež je preuzet i priložen ovom mailu.\n\n` +
+                            `Poslano sa Interaktivni Whiteboard aplikacije.`;
+                
+                const mailtoLink = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+                window.location.href = mailtoLink;
+            }, 1000);
+        }
+    </script>
+</body>
+</html>
